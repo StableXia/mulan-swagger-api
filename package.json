@@ -1,0 +1,29 @@
+{
+  "name": "mulan-swagger-api",
+  "version": "1.0.0",
+  "description": "根据swagger文档自动生成前端可调用的api文件",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xiaotangdou/mulan-swagger-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xiaotangdou/mulan-swagger-api/issues"
+  },
+  "homepage": "https://github.com/xiaotangdou/mulan-swagger-api#readme",
+  "dependencies": {
+    "axios": "^0.20.0",
+    "ejs": "^3.1.5",
+    "js-yaml": "^3.14.0",
+    "lodash": "^4.17.20",
+    "ora": "^5.1.0",
+    "react": "^16.13.1",
+    "swagger-js-codegen": "^1.13.0"
+  }
+}
