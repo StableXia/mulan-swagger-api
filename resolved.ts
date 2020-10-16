@@ -50,10 +50,11 @@ return request(url,'POST',payload)},
 */
 confirmOrder (
   payload: {
-'orderItemUuid':string,}
+'orderItemUuid':string,
+  }
 ): Promise<any>{
   let url = '/api/v1/mulan/orderItem/{orderItemUuid}/confirm';
-url = url.replace('{orderItemUuid}',payload.orderItemUuid);return request(url,'PUT',payload)},
+return request(url,'PUT',payload)},
 
 /**
 * @name * 
@@ -89,7 +90,16 @@ return request(url,'PUT',payload)},
 */
 listOrders (
   payload: {
-'locationUuid':string,'keyword':string,'orderStatus':string,'orderType':string,'cycleType':string,'startTime':number,'endTime':number,'page'?:number,'size'?:number,}
+'locationUuid':string,
+  'keyword':string,
+  'orderStatus':string,
+  'orderType':string,
+  'cycleType':string,
+  'startTime':number,
+  'endTime':number,
+  'page'?:number,
+  'size'?:number,
+  }
 ): Promise<any>{
   let url = '/api/v1/mulan/orderItems';
 return request(url,'GET',payload)},
@@ -100,10 +110,11 @@ return request(url,'GET',payload)},
 */
 getOrderDetail (
   payload: {
-'orderItemUuid':string,}
+'orderItemUuid':string,
+  }
 ): Promise<any>{
   let url = '/api/v1/mulan/orderItem/{orderItemUuid}';
-url = url.replace('{orderItemUuid}',payload.orderItemUuid);return request(url,'GET',payload)},
+return request(url,'GET',payload)},
 
 /**
 * @name * 
@@ -112,10 +123,12 @@ url = url.replace('{orderItemUuid}',payload.orderItemUuid);return request(url,'G
 */
 editRemark (
   payload: {
-'orderItemUuid':string,'remark':string,}
+'orderItemUuid':string,
+  'remark':string,
+  }
 ): Promise<any>{
   let url = '/api/v1/mulan/orderItem/{orderItemUuid}/remark';
-url = url.replace('{orderItemUuid}',payload.orderItemUuid);return request(url,'PUT',payload)},
+return request(url,'PUT',payload)},
 
 /**
 * @name * 
@@ -123,10 +136,11 @@ url = url.replace('{orderItemUuid}',payload.orderItemUuid);return request(url,'P
 */
 getOrder (
   payload: {
-'contractNo':string,}
+'contractNo':string,
+  }
 ): Promise<any>{
   let url = '/api/v1/crm/contract/{contractNo}';
-url = url.replace('{contractNo}',payload.contractNo);return request(url,'GET',payload)},
+return request(url,'GET',payload)},
 
 /**
 * @name * 
@@ -144,10 +158,11 @@ return request(url,'POST',payload)},
 */
 confirmOrder_1 (
   payload: {
-'contractNo':string,}
+'contractNo':string,
+  }
 ): Promise<any>{
   let url = '/api/v1/crm/contract/{contractNo}/confirm';
-url = url.replace('{contractNo}',payload.contractNo);return request(url,'PUT',payload)},
+return request(url,'PUT',payload)},
 
 /**
 * @name * 
@@ -155,10 +170,11 @@ url = url.replace('{contractNo}',payload.contractNo);return request(url,'PUT',pa
 */
 cancelOrder_1 (
   payload: {
-'contractNo':string,}
+'contractNo':string,
+  }
 ): Promise<any>{
   let url = '/api/v1/crm/contract/{contractNo}/cancel';
-url = url.replace('{contractNo}',payload.contractNo);return request(url,'PUT',payload)},
+return request(url,'PUT',payload)},
 
 /**
 * @name * 
@@ -166,10 +182,11 @@ url = url.replace('{contractNo}',payload.contractNo);return request(url,'PUT',pa
 */
 releaseFutureReserve (
   payload: {
-'contractNo':string,}
+'contractNo':string,
+  }
 ): Promise<any>{
   let url = '/api/v1/crm/contract/{contractNo}/releaseFutureReserve';
-url = url.replace('{contractNo}',payload.contractNo);return request(url,'PUT',payload)},
+return request(url,'PUT',payload)},
 
 /**
 * @name * 
@@ -177,10 +194,11 @@ url = url.replace('{contractNo}',payload.contractNo);return request(url,'PUT',pa
 */
 getOrder_1 (
   payload: {
-'contractNo':string,}
+'contractNo':string,
+  }
 ): Promise<any>{
   let url = '/rpc/v1/contract/{contractNo}';
-url = url.replace('{contractNo}',payload.contractNo);return request(url,'GET',payload)},
+return request(url,'GET',payload)},
 
 /**
 * @name * 
@@ -190,7 +208,10 @@ url = url.replace('{contractNo}',payload.contractNo);return request(url,'GET',pa
 */
 getOrders (
   payload: {
-'customerUuids':string,'orderStatus':string,'orderType':string,}
+'customerUuids':string,
+  'orderStatus':string,
+  'orderType':string,
+  }
 ): Promise<any>{
   let url = '/rpc/v1/orders';
 return request(url,'GET',payload)},

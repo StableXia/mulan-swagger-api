@@ -14,18 +14,19 @@ const API = {
 /**
 * @name <%=method.summary_%>
 * <% method.parameters.forEach(parameter => {%>
-* @param <%=parameter.type %> <%=parameter.camelCaseName %> - <%=parameter.description _%>
+* @param <%=parameter.type %> <%=parameter.name %> - <%=parameter.description _%>
 <%})%>
 */
 <%=method.methodName %> (
   payload: {
 <% method.parameters.forEach(parameter => {
     let paramType = parameter.tsType.target || parameter.tsType.tsType;
-    if(paramType === "array"){paramType = "Array<"+parameter.tsType.elementType.target+">"}%>'<%=parameter.camelCaseName %>'<%=parameter.required %>:<%-paramType %>,<%})_%>
+    if(paramType === "array"){paramType = "Array<"+parameter.tsType.elementType.target+">"}%>'<%=parameter.name %>'<%=parameter.required %>:<%-paramType %>,
+  <%})_%>
 }
 ): Promise<any>{
   let url = '<%=method.path%>';
-<%_method.parameters.forEach(parameter => {%><%if(parameter.isPathParameter) {%>url = url.replace('{<%=parameter.camelCaseName%>}',payload.<%=parameter.camelCaseName%>);<%}%><%})_%>
+<%_method.parameters.forEach(parameter => {%><%if(parameter.isPathParameter) {%>url = url.replace('{<%=parameter.name%>}',payload.<%=parameter.name%>);<%}%><%})_%>
 return request(url,'<%=method.method%>',payload)},
 <%})%>
 }
