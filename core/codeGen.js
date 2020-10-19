@@ -1,7 +1,9 @@
-const { forEach, isString } = require("../helpers/utils");
+const ejs = require("ejs");
 const { generateTsType } = require("./tsType");
 const { API_METHODS } = require("../helpers/constants");
-const ejs = require("ejs");
+const { convertYmlToJson } = require("./convertYmlToJson");
+const { readFile, writeFile, reslovePath } = require("../helpers/files");
+const { forEach, isString } = require("../helpers/utils");
 
 const isPathParameter = (v) => v === "path";
 
@@ -89,7 +91,18 @@ function compileTpl(tplString, swaggerData) {
   return ejs.render(tplString, swaggerData);
 }
 
+async function genCode(tplPath, name, output) {
+  const swaggerData = getTargetJsonFromSwaggerJson(
+    convertYmlToJson(await readFile(tplPath, "utf8"))
+  );
+  const ejsTeml = await readFile(reslovePath("../template/ts.ejs"));
+  const res = compileTpl(ejsTeml.toString(), swaggerData);
+
+  writeFile(`${output}/${name}.ts`, res, () => {});
+}
+
 module.exports = {
   getTargetJsonFromSwaggerJson,
   compileTpl,
+  genCode,
 };
