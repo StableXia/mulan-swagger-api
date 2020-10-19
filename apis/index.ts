@@ -14,7 +14,7 @@ export function clear (
   transformers?: AxiosTransformer[] | AxiosTransformer,
 ): Promise<any>{
   let url = '/api/v1/mulan/orderItems/clear';
-  return useCallback(() => ({
+  return useCallback((): AxiosRequestConfig => ({
     url,
     method: 'PUT',
     transformResponse: transformers,
@@ -32,7 +32,7 @@ export function moveIn (
   transformers?: AxiosTransformer[] | AxiosTransformer,
 ): Promise<any>{
   let url = '/api/v1/mulan/orderItems/moveIn';
-  return useCallback(() => ({
+  return useCallback((): AxiosRequestConfig => ({
     url,
     method: 'PUT',
     transformResponse: transformers,
@@ -50,7 +50,7 @@ export function moveOut (
   transformers?: AxiosTransformer[] | AxiosTransformer,
 ): Promise<any>{
   let url = '/api/v1/mulan/orderItems/moveOut';
-  return useCallback(() => ({
+  return useCallback((): AxiosRequestConfig => ({
     url,
     method: 'PUT',
     transformResponse: transformers,
@@ -68,7 +68,7 @@ export function createOrder (
   transformers?: AxiosTransformer[] | AxiosTransformer,
 ): Promise<any>{
   let url = '/api/v1/mulan/order';
-  return useCallback(() => ({
+  return useCallback((): AxiosRequestConfig => ({
     url,
     method: 'POST',
     transformResponse: transformers,
@@ -88,7 +88,7 @@ export function confirmOrder (
   transformers?: AxiosTransformer[] | AxiosTransformer,
 ): Promise<any>{
   let url = '/api/v1/mulan/orderItem/{orderItemUuid}/confirm';
-  return useCallback(() => ({
+  return useCallback((): AxiosRequestConfig => ({
     url,
     method: 'PUT',
     transformResponse: transformers,
@@ -106,7 +106,7 @@ export function cancelOrder (
   transformers?: AxiosTransformer[] | AxiosTransformer,
 ): Promise<any>{
   let url = '/api/v1/mulan/orderItems/cancel';
-  return useCallback(() => ({
+  return useCallback((): AxiosRequestConfig => ({
     url,
     method: 'PUT',
     transformResponse: transformers,
@@ -124,7 +124,7 @@ export function finishOrder (
   transformers?: AxiosTransformer[] | AxiosTransformer,
 ): Promise<any>{
   let url = '/api/v1/mulan/orderItems/finish';
-  return useCallback(() => ({
+  return useCallback((): AxiosRequestConfig => ({
     url,
     method: 'PUT',
     transformResponse: transformers,
@@ -160,7 +160,7 @@ export function listOrders (
   transformers?: AxiosTransformer[] | AxiosTransformer,
 ): Promise<any>{
   let url = '/api/v1/mulan/orderItems';
-  return useCallback(() => ({
+  return useCallback((): AxiosRequestConfig => ({
     url,
     method: 'GET',
     transformResponse: transformers,
@@ -180,7 +180,7 @@ export function getOrderDetail (
   transformers?: AxiosTransformer[] | AxiosTransformer,
 ): Promise<any>{
   let url = '/api/v1/mulan/orderItem/{orderItemUuid}';
-  return useCallback(() => ({
+  return useCallback((): AxiosRequestConfig => ({
     url,
     method: 'GET',
     transformResponse: transformers,
@@ -202,7 +202,7 @@ export function editRemark (
   transformers?: AxiosTransformer[] | AxiosTransformer,
 ): Promise<any>{
   let url = '/api/v1/mulan/orderItem/{orderItemUuid}/remark';
-  return useCallback(() => ({
+  return useCallback((): AxiosRequestConfig => ({
     url,
     method: 'PUT',
     transformResponse: transformers,
@@ -222,7 +222,7 @@ export function getOrder (
   transformers?: AxiosTransformer[] | AxiosTransformer,
 ): Promise<any>{
   let url = '/api/v1/crm/contract/{contractNo}';
-  return useCallback(() => ({
+  return useCallback((): AxiosRequestConfig => ({
     url,
     method: 'GET',
     transformResponse: transformers,
@@ -240,7 +240,7 @@ export function createOrder_1 (
   transformers?: AxiosTransformer[] | AxiosTransformer,
 ): Promise<any>{
   let url = '/api/v1/crm/order';
-  return useCallback(() => ({
+  return useCallback((): AxiosRequestConfig => ({
     url,
     method: 'POST',
     transformResponse: transformers,
@@ -260,7 +260,7 @@ export function confirmOrder_1 (
   transformers?: AxiosTransformer[] | AxiosTransformer,
 ): Promise<any>{
   let url = '/api/v1/crm/contract/{contractNo}/confirm';
-  return useCallback(() => ({
+  return useCallback((): AxiosRequestConfig => ({
     url,
     method: 'PUT',
     transformResponse: transformers,
@@ -280,7 +280,7 @@ export function cancelOrder_1 (
   transformers?: AxiosTransformer[] | AxiosTransformer,
 ): Promise<any>{
   let url = '/api/v1/crm/contract/{contractNo}/cancel';
-  return useCallback(() => ({
+  return useCallback((): AxiosRequestConfig => ({
     url,
     method: 'PUT',
     transformResponse: transformers,
@@ -300,7 +300,7 @@ export function releaseFutureReserve (
   transformers?: AxiosTransformer[] | AxiosTransformer,
 ): Promise<any>{
   let url = '/api/v1/crm/contract/{contractNo}/releaseFutureReserve';
-  return useCallback(() => ({
+  return useCallback((): AxiosRequestConfig => ({
     url,
     method: 'PUT',
     transformResponse: transformers,
@@ -320,7 +320,7 @@ export function getOrder_1 (
   transformers?: AxiosTransformer[] | AxiosTransformer,
 ): Promise<any>{
   let url = '/rpc/v1/contract/{contractNo}';
-  return useCallback(() => ({
+  return useCallback((): AxiosRequestConfig => ({
     url,
     method: 'GET',
     transformResponse: transformers,
@@ -344,7 +344,7 @@ export function getOrders (
   transformers?: AxiosTransformer[] | AxiosTransformer,
 ): Promise<any>{
   let url = '/rpc/v1/orders';
-  return useCallback(() => ({
+  return useCallback((): AxiosRequestConfig => ({
     url,
     method: 'GET',
     transformResponse: transformers,
@@ -362,7 +362,7 @@ export function morningRun (
   transformers?: AxiosTransformer[] | AxiosTransformer,
 ): Promise<any>{
   let url = '/api/v1/fe/morningRun';
-  return useCallback(() => ({
+  return useCallback((): AxiosRequestConfig => ({
     url,
     method: 'POST',
     transformResponse: transformers,
@@ -380,7 +380,7 @@ export function ping (
   transformers?: AxiosTransformer[] | AxiosTransformer,
 ): Promise<any>{
   let url = '/ping';
-  return useCallback(() => ({
+  return useCallback((): AxiosRequestConfig => ({
     url,
     method: 'GET',
     transformResponse: transformers,

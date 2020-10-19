@@ -28,7 +28,7 @@ export function <%=method.methodName %> (
 ): Promise<any>{
   let url = '<%=method.path%>';
 <%_method.parameters.forEach(parameter => {%><%if(parameter.isPathParameter) {%>url = url.replace('{<%=parameter.name%>}',payload.<%=parameter.name%>);<%}%><%})_%>
-  return useCallback(() => ({
+  return useCallback((): AxiosRequestConfig => ({
     url,
     method: '<%=method.method%>',
     transformResponse: transformers,

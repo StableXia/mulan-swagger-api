@@ -1,6 +1,6 @@
-const { forEach, isString} = require('./utils')
+const { forEach, isString} = require('../helpers/utils')
 const { generateTsType } = require('./tsType')
-const { API_METHODS } = require('./constants')
+const { API_METHODS } = require('../helpers/constants')
 const ejs = require('ejs');
 
 function normalizeName(id) {

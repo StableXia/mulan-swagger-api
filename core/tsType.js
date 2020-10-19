@@ -1,5 +1,5 @@
-const { ATOMIC_TYPE } = require('./constants')
-const { forEach } = require('./utils')
+const { ATOMIC_TYPE } = require('../helpers/constants')
+const { forEach } = require('../helpers/utils')
 
 const  isStringType = (v) => v === 'string'
 const  isNumberType = (v) => (v === 'number' || v === 'integer')

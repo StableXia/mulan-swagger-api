@@ -9,17 +9,9 @@ const readFile = promisify(fs.readFile)
 
 const writeFile = promisify(fs.writeFile)
 
-const convertYmlToJson = (content) => {
-    try {
-        return yaml.safeLoad(content);
-    } catch(error) {
-        throw error
-    }
-}
 
 module.exports = {
     reslovePath,
     readFile,
-    writeFile,
-    convertYmlToJson
+    writeFile
 }
