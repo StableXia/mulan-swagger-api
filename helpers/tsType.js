@@ -85,4 +85,9 @@ function generateTsType(swaggerParameter, swaggerJson) {
       tempType.isAtomic || ["string", "number", "boolean", "any"].includes(tempType.tsType);
   
     return tempType;
-  }
+}
+
+
+module.exports = {
+    generateTsType
+}

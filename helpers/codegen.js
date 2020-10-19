@@ -1,14 +1,16 @@
-const { generateTsType ,forEach, isString} = require('./utils')
+const { forEach, isString} = require('./utils')
+const { generateTsType } = require('./tsType')
+const ejs = require('ejs');
 
-let normalizeName = function (id) {
+function normalizeName(id) {
   return id.replace(/\.|\-|\{|\}|\s/g, '_');
 };
 
-var normalizeTypeName = function (id) {
+function normalizeTypeName(id) {
   return id.replace(/«|»/g,"");
 };
 
-const getTargetJsonFromSwaggerJson =  (swaggerJson, opts = {}) => {
+function getTargetJsonFromSwaggerJson(swaggerJson, opts = {}) {
   const authorizedMethods = [
     'GET',
     'POST',
@@ -79,4 +81,11 @@ const getTargetJsonFromSwaggerJson =  (swaggerJson, opts = {}) => {
   return data
 };
 
-module.exports = getTargetJsonFromSwaggerJson;
+function compileTpl(tplString, swaggerData) {
+  return ejs.render(tplString, swaggerData);
+}
+
+module.exports = {
+  getTargetJsonFromSwaggerJson,
+  compileTpl
+};
