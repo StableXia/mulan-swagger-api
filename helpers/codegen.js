@@ -3,8 +3,6 @@ const { generateTsType } = require('./tsType')
 const { API_METHODS } = require('./constants')
 const ejs = require('ejs');
 
-
-
 function normalizeName(id) {
   return id.replace(/\.|\-|\{|\}|\s/g, '_');
 };
