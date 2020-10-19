@@ -11,10 +11,38 @@
 2. 生成目录
 - [x] 指定生成目录路径
 
+
+### tplConfig
+# 32
+# 32
+
+# 32
+# 32
+# 32
+
+# 32
+
+# 32
+# 32
+# 32
+# 32
+
+# 32
+# 32
+# 32
+
+
+
 ### api-gen-config
 
 | 参数       | 说明 |         类型 | 默认值 |
 | --------- | -- | ----------- | -- |
 | output     |  生成目录  |     string | -/packages/apis |
-| tpl     |  swagger xml文件  |     string | array | -/packages/apis |
+| tpl     |  swagger xml文件  |     [tplConfig](#tplConfig) | -/packages/apis |
+
+
+
+
+
+
 
