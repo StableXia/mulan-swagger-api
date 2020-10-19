@@ -1,10 +1,13 @@
-function isStringType(v) {
-    return v === 'string'
-}
+const { ATOMIC_TYPE } = require('./constants')
+const { forEach } = require('./utils')
 
-function isNumberType(v) {
-    return v === 'number'
-}
+const  isStringType = (v) => v === 'string'
+const  isNumberType = (v) => (v === 'number' || v === 'integer')
+const  isArrayType = (v) => v === 'array'
+const  isObjectType = (v) => v === 'object'
+const  isBooleanType = (v) => v === 'boolean'
+const  isRefType = (v) => v === 'ref'
+const isAtomicType = (v) => ATOMIC_TYPE.includes(v)
 
 function generateTsType(swaggerParameter, swaggerJson) {
     const tempType = {
@@ -19,70 +22,52 @@ function generateTsType(swaggerParameter, swaggerJson) {
     if (swaggerParameter.$ref) {
       tempType.tsType = "ref";
       tempType.target = swaggerParameter.$ref.substring(swaggerParameter.$ref.lastIndexOf("/") + 1);
-    } else if (swaggerParameter.hasOwnProperty("enum")) {
-      tempType.tsType = swaggerParameter.enum
-        .map(function(str) {
-          return JSON.stringify(str);
-        })
-        .join(" | ");
-      tempType.isAtomic = true;
-      tempType.isEnum = true;
-    } else if (swaggerParameter.type === "string") {
+    } else if (isStringType(swaggerParameter.type)) {
       tempType.tsType = "string";
-    } else if (swaggerParameter.type === "number" || swaggerParameter.type === "integer") {
+    } else if (isNumberType(swaggerParameter.type)) {
       tempType.tsType = "number";
-    } else if (swaggerParameter.type === "boolean") {
+    } else if (isBooleanType(swaggerParameter.type)) {
       tempType.tsType = "boolean";
-    } else if (swaggerParameter.type === "array") {
+    } else if (isArrayType(swaggerParameter.type)) {
       tempType.tsType = "array";
       tempType.elementType = generateTsType(swaggerParameter.items);
-    } else if (swaggerParameter.type === "object") {
+    } else if (isObjectType(swaggerParameter.type)) {
       tempType.tsType = "object";
       tempType.properties = [];
       if (swaggerParameter.allOf) {
-        swaggerParameter.allOf.forEach(function(ref) {
+        swaggerParameter.allOf.forEach((ref) => {
           if (ref.$ref) {
-            var refSegments = ref.$ref.split("/");
-            var name = refSegments[refSegments.length - 1];
-            swaggerJson.definitions.forEach(function(definition, definitionName) {
+            const refSegments = ref.$ref.split("/");
+            const name = refSegments[refSegments.length - 1];
+            forEach(swaggerJson.definitions, (definition, definitionName) => {
               if (definitionName === name) {
-                var property = generateTsType(definition, swaggerJson);
-                Array.prototype.push.apply(
-                  tempType.properties,
-                  property.properties
-                );
+                const property = generateTsType(definition, swaggerJson);
+                tempType.properties.push(property.properties)
               }
             });
           } else {
-            var property = generateTsType(ref);
-            Array.prototype.push.apply(tempType.properties, property.properties);
+            const property = generateTsType(ref);
+            tempType.properties.push(property.properties)
           }
         });
       }
   
-      swaggerParameter.properties.forEach( function(propertyType, propertyName) {
-        var property = generateTsType(propertyType);
+      forEach(swaggerParameter.properties, (propertyType, propertyName) => {
+        const property = generateTsType(propertyType);
+
         property.name = propertyName;
-  
-        property.optional = true;
-        if (
-          swaggerParameter.required &&
-          swaggerParameter.required.indexOf(propertyName) !== -1
-        ) {
-          property.optional = false;
-        }
+        property.optional = !swaggerParameter.required || !swaggerParameter.required.includes(propertyName);
   
         tempType.properties.push(property);
       });
     } else {
-      tempType.tsType = "any";
+      tempType.tsType = 'any';
     }
   
-    tempType.isRef = tempType.tsType === "ref";
-    tempType.isObject = tempType.tsType === "object";
-    tempType.isArray = tempType.tsType === "array";
-    tempType.isAtomic =
-      tempType.isAtomic || ["string", "number", "boolean", "any"].includes(tempType.tsType);
+    tempType.isRef = isRefType(tempType.tsType);
+    tempType.isObject = isObjectType(tempType.tsType);
+    tempType.isArray = isArrayType(tempType.tsType);
+    tempType.isAtomic = tempType.isAtomic || isAtomicType(tempType.tsType);
   
     return tempType;
 }

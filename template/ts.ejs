@@ -12,7 +12,7 @@ import request from '@mulan/api';
 const API = {
 <% methods.forEach( method => {%>
 /**
-* @name <%=method.summary_%>
+* @name <%=method.summary%>
 * <% method.parameters.forEach(parameter => {%>
 * @param <%=parameter.type %> <%=parameter.name %> - <%=parameter.description _%>
 <%})%>

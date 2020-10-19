@@ -5,7 +5,8 @@ import request from '@mulan/api';
 const API = {
 
 /**
-* @name * 
+* @name 
+* 
 */
 clear (
   payload: {
@@ -15,7 +16,8 @@ clear (
 return request(url,'PUT',payload)},
 
 /**
-* @name * 
+* @name 
+* 
 */
 moveIn (
   payload: {
@@ -25,7 +27,8 @@ moveIn (
 return request(url,'PUT',payload)},
 
 /**
-* @name * 
+* @name 
+* 
 */
 moveOut (
   payload: {
@@ -35,7 +38,8 @@ moveOut (
 return request(url,'PUT',payload)},
 
 /**
-* @name * 
+* @name 
+* 
 */
 createOrder (
   payload: {
@@ -45,7 +49,8 @@ createOrder (
 return request(url,'POST',payload)},
 
 /**
-* @name * 
+* @name 
+* 
 * @param  orderItemUuid - 
 */
 confirmOrder (
@@ -57,7 +62,8 @@ confirmOrder (
 return request(url,'PUT',payload)},
 
 /**
-* @name * 
+* @name 
+* 
 */
 cancelOrder (
   payload: {
@@ -67,7 +73,8 @@ cancelOrder (
 return request(url,'PUT',payload)},
 
 /**
-* @name * 
+* @name 
+* 
 */
 finishOrder (
   payload: {
@@ -77,7 +84,8 @@ finishOrder (
 return request(url,'PUT',payload)},
 
 /**
-* @name * 
+* @name 
+* 
 * @param  locationUuid - 
 * @param  keyword - 
 * @param  orderStatus - 
@@ -105,7 +113,8 @@ listOrders (
 return request(url,'GET',payload)},
 
 /**
-* @name * 
+* @name 
+* 
 * @param  orderItemUuid - 
 */
 getOrderDetail (
@@ -117,7 +126,8 @@ getOrderDetail (
 return request(url,'GET',payload)},
 
 /**
-* @name * 
+* @name 
+* 
 * @param  orderItemUuid - 
 * @param  remark - 
 */
@@ -131,7 +141,8 @@ editRemark (
 return request(url,'PUT',payload)},
 
 /**
-* @name * 
+* @name 
+* 
 * @param  contractNo - 
 */
 getOrder (
@@ -143,7 +154,8 @@ getOrder (
 return request(url,'GET',payload)},
 
 /**
-* @name * 
+* @name 
+* 
 */
 createOrder_1 (
   payload: {
@@ -153,7 +165,8 @@ createOrder_1 (
 return request(url,'POST',payload)},
 
 /**
-* @name * 
+* @name 
+* 
 * @param  contractNo - 
 */
 confirmOrder_1 (
@@ -165,7 +178,8 @@ confirmOrder_1 (
 return request(url,'PUT',payload)},
 
 /**
-* @name * 
+* @name 
+* 
 * @param  contractNo - 
 */
 cancelOrder_1 (
@@ -177,7 +191,8 @@ cancelOrder_1 (
 return request(url,'PUT',payload)},
 
 /**
-* @name * 
+* @name 
+* 
 * @param  contractNo - 
 */
 releaseFutureReserve (
@@ -189,7 +204,8 @@ releaseFutureReserve (
 return request(url,'PUT',payload)},
 
 /**
-* @name * 
+* @name 
+* 
 * @param  contractNo - 
 */
 getOrder_1 (
@@ -201,7 +217,8 @@ getOrder_1 (
 return request(url,'GET',payload)},
 
 /**
-* @name * 
+* @name 
+* 
 * @param  customerUuids - 
 * @param  orderStatus - 
 * @param  orderType - 
@@ -217,7 +234,8 @@ getOrders (
 return request(url,'GET',payload)},
 
 /**
-* @name * 
+* @name 
+* 
 */
 morningRun (
   payload: {
@@ -227,7 +245,8 @@ morningRun (
 return request(url,'POST',payload)},
 
 /**
-* @name * 
+* @name 
+* 
 */
 ping (
   payload: {

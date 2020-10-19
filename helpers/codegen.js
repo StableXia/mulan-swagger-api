@@ -1,6 +1,9 @@
 const { forEach, isString} = require('./utils')
 const { generateTsType } = require('./tsType')
+const { API_METHODS } = require('./constants')
 const ejs = require('ejs');
+
+
 
 function normalizeName(id) {
   return id.replace(/\.|\-|\{|\}|\s/g, '_');
@@ -11,13 +14,6 @@ function normalizeTypeName(id) {
 };
 
 function getTargetJsonFromSwaggerJson(swaggerJson, opts = {}) {
-  const authorizedMethods = [
-    'GET',
-    'POST',
-    'PUT',
-    'DELETE',
-  ];
-
   const data = {
     definitions: [],
     methods: [],
@@ -27,7 +23,7 @@ function getTargetJsonFromSwaggerJson(swaggerJson, opts = {}) {
     forEach(pathOpts, (pathOptsVal, pathOptionsKey) => {
       const pathOptionsKeyUpper = pathOptionsKey.toUpperCase();
       // 过滤无效的方法
-      if (pathOptionsKeyUpper === '' || authorizedMethods.indexOf(pathOptionsKeyUpper) === -1) {
+      if (pathOptionsKeyUpper === '' || !API_METHODS.includes(pathOptionsKeyUpper)) {
         return;
       }
 
@@ -65,7 +61,6 @@ function getTargetJsonFromSwaggerJson(swaggerJson, opts = {}) {
         method.parameters.push(parameter);
       })
 
-      console.log(method.parameters)
       data.methods.push(method);
     })
   })
