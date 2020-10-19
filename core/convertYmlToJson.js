@@ -1,13 +1,13 @@
-const yaml = require('js-yaml')
+const yaml = require("js-yaml");
 
 const convertYmlToJson = (content) => {
-    try {
-        return yaml.safeLoad(content);
-    } catch(error) {
-        throw error
-    }
-}
+  try {
+    return yaml.safeLoad(content);
+  } catch (error) {
+    throw error;
+  }
+};
 
 module.exports = {
-    convertYmlToJson
-}
+  convertYmlToJson,
+};
