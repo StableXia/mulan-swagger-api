@@ -6,41 +6,24 @@
 
 1. 目标文件解析
 - [ ] 指定解析文件路径
-- [ ] 指定解析文件的目录，自动扫描文件
+- [ ] 指定解析文件的目录，自动扫描指定目录下的文件
 
 2. 生成目录
 - [x] 指定生成目录路径
 
-
-### tplConfig
-# 32
-# 32
-
-# 32
-# 32
-# 32
-
-# 32
-
-# 32
-# 32
-# 32
-# 32
-
-# 32
-# 32
-# 32
-
-
-
 ### api-gen-config
 
 | 参数       | 说明 |         类型 | 默认值 |
-| --------- | -- | ----------- | -- |
-| output     |  生成目录  |     string | -/packages/apis |
-| tpl     |  swagger xml文件  |     [tplConfig](#tplConfig) | -/packages/apis |
+| -- | -- | -- | -- |
+| output     |  解析文件的生成目录  |     string | -/packages/apis |
+| tpl     |  要解析的 swagger xml 文件  |     string &#124; [tplConfig](#tplConfig)[] | - |
 
+### tplConfig
 
+| 参数       | 说明 |         类型 | 默认值 |
+| -- | -- | -- | -- |
+| name     |  生成的api文件名  |     string | path中的文件名 |
+| path     |  文件路径  |     string | - |
 
 
 
