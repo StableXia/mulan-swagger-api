@@ -21,9 +21,16 @@ function pickFields(obj, ...fields) {
   return temp;
 }
 
+function sleep(s) {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(), s * 1000);
+  });
+}
+
 module.exports = {
   isString,
   isObject,
   forEach,
   pickFields,
+  sleep,
 };
