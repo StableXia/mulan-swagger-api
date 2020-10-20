@@ -1,4 +1,4 @@
-const { isString, pickFields } = require("../helpers/utils");
+const { isString, isObject } = require("../helpers/utils");
 const path = require("path");
 
 function pathParse(filePath) {
@@ -13,6 +13,9 @@ function pathParse(filePath) {
 function getTplConfig(tplOpts) {
   if (isString(tplOpts)) {
     return [pathParse(tplOpts)];
+  }
+
+  if (isObject(tplOpts)) {
   }
 
   return tplOpts.map((v) => {
