@@ -18,6 +18,8 @@ const fsStat = promisify(fs.stat);
 
 const readdir = promisify(fs.readdir);
 
+const isExistsPath = promisify(fs.exists);
+
 function createDir(dirPath) {
   return fsMkdir(dirPath).then(
     () => true,
@@ -73,4 +75,5 @@ module.exports = {
   createDir,
   getFileStat,
   scanDir,
+  isExistsPath,
 };

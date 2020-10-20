@@ -12,7 +12,7 @@ export function clear (
   payload?: {
     },
   transformers?: AxiosTransformer[] | AxiosTransformer,
-): Promise<any>{
+) {
   let url = '/api/v1/mulan/orderItems/clear';
   return useCallback((): AxiosRequestConfig => ({
     url,
@@ -30,7 +30,7 @@ export function moveIn (
   payload?: {
     },
   transformers?: AxiosTransformer[] | AxiosTransformer,
-): Promise<any>{
+) {
   let url = '/api/v1/mulan/orderItems/moveIn';
   return useCallback((): AxiosRequestConfig => ({
     url,
@@ -48,7 +48,7 @@ export function moveOut (
   payload?: {
     },
   transformers?: AxiosTransformer[] | AxiosTransformer,
-): Promise<any>{
+) {
   let url = '/api/v1/mulan/orderItems/moveOut';
   return useCallback((): AxiosRequestConfig => ({
     url,
@@ -66,7 +66,7 @@ export function createOrder (
   payload?: {
     },
   transformers?: AxiosTransformer[] | AxiosTransformer,
-): Promise<any>{
+) {
   let url = '/api/v1/mulan/order';
   return useCallback((): AxiosRequestConfig => ({
     url,
@@ -86,7 +86,7 @@ export function confirmOrder (
   'orderItemUuid':string,
       },
   transformers?: AxiosTransformer[] | AxiosTransformer,
-): Promise<any>{
+) {
   let url = '/api/v1/mulan/orderItem/{orderItemUuid}/confirm';
 url = url.replace('{orderItemUuid}',payload.orderItemUuid);  return useCallback((): AxiosRequestConfig => ({
     url,
@@ -104,7 +104,7 @@ export function cancelOrder (
   payload?: {
     },
   transformers?: AxiosTransformer[] | AxiosTransformer,
-): Promise<any>{
+) {
   let url = '/api/v1/mulan/orderItems/cancel';
   return useCallback((): AxiosRequestConfig => ({
     url,
@@ -122,7 +122,7 @@ export function finishOrder (
   payload?: {
     },
   transformers?: AxiosTransformer[] | AxiosTransformer,
-): Promise<any>{
+) {
   let url = '/api/v1/mulan/orderItems/finish';
   return useCallback((): AxiosRequestConfig => ({
     url,
@@ -158,7 +158,7 @@ export function listOrders (
     'size'?:number,
       },
   transformers?: AxiosTransformer[] | AxiosTransformer,
-): Promise<any>{
+) {
   let url = '/api/v1/mulan/orderItems';
   return useCallback((): AxiosRequestConfig => ({
     url,
@@ -178,7 +178,7 @@ export function getOrderDetail (
   'orderItemUuid':string,
       },
   transformers?: AxiosTransformer[] | AxiosTransformer,
-): Promise<any>{
+) {
   let url = '/api/v1/mulan/orderItem/{orderItemUuid}';
 url = url.replace('{orderItemUuid}',payload.orderItemUuid);  return useCallback((): AxiosRequestConfig => ({
     url,
@@ -200,7 +200,7 @@ export function editRemark (
     'remark':string,
       },
   transformers?: AxiosTransformer[] | AxiosTransformer,
-): Promise<any>{
+) {
   let url = '/api/v1/mulan/orderItem/{orderItemUuid}/remark';
 url = url.replace('{orderItemUuid}',payload.orderItemUuid);  return useCallback((): AxiosRequestConfig => ({
     url,
@@ -220,7 +220,7 @@ export function getOrder (
   'contractNo':string,
       },
   transformers?: AxiosTransformer[] | AxiosTransformer,
-): Promise<any>{
+) {
   let url = '/api/v1/crm/contract/{contractNo}';
 url = url.replace('{contractNo}',payload.contractNo);  return useCallback((): AxiosRequestConfig => ({
     url,
@@ -238,7 +238,7 @@ export function createOrder_1 (
   payload?: {
     },
   transformers?: AxiosTransformer[] | AxiosTransformer,
-): Promise<any>{
+) {
   let url = '/api/v1/crm/order';
   return useCallback((): AxiosRequestConfig => ({
     url,
@@ -258,7 +258,7 @@ export function confirmOrder_1 (
   'contractNo':string,
       },
   transformers?: AxiosTransformer[] | AxiosTransformer,
-): Promise<any>{
+) {
   let url = '/api/v1/crm/contract/{contractNo}/confirm';
 url = url.replace('{contractNo}',payload.contractNo);  return useCallback((): AxiosRequestConfig => ({
     url,
@@ -278,7 +278,7 @@ export function cancelOrder_1 (
   'contractNo':string,
       },
   transformers?: AxiosTransformer[] | AxiosTransformer,
-): Promise<any>{
+) {
   let url = '/api/v1/crm/contract/{contractNo}/cancel';
 url = url.replace('{contractNo}',payload.contractNo);  return useCallback((): AxiosRequestConfig => ({
     url,
@@ -298,7 +298,7 @@ export function releaseFutureReserve (
   'contractNo':string,
       },
   transformers?: AxiosTransformer[] | AxiosTransformer,
-): Promise<any>{
+) {
   let url = '/api/v1/crm/contract/{contractNo}/releaseFutureReserve';
 url = url.replace('{contractNo}',payload.contractNo);  return useCallback((): AxiosRequestConfig => ({
     url,
@@ -318,7 +318,7 @@ export function getOrder_1 (
   'contractNo':string,
       },
   transformers?: AxiosTransformer[] | AxiosTransformer,
-): Promise<any>{
+) {
   let url = '/rpc/v1/contract/{contractNo}';
 url = url.replace('{contractNo}',payload.contractNo);  return useCallback((): AxiosRequestConfig => ({
     url,
@@ -342,7 +342,7 @@ export function getOrders (
     'orderType':string,
       },
   transformers?: AxiosTransformer[] | AxiosTransformer,
-): Promise<any>{
+) {
   let url = '/rpc/v1/orders';
   return useCallback((): AxiosRequestConfig => ({
     url,
@@ -360,7 +360,7 @@ export function morningRun (
   payload?: {
     },
   transformers?: AxiosTransformer[] | AxiosTransformer,
-): Promise<any>{
+) {
   let url = '/api/v1/fe/morningRun';
   return useCallback((): AxiosRequestConfig => ({
     url,
@@ -378,7 +378,7 @@ export function ping (
   payload?: {
     },
   transformers?: AxiosTransformer[] | AxiosTransformer,
-): Promise<any>{
+) {
   let url = '/ping';
   return useCallback((): AxiosRequestConfig => ({
     url,
