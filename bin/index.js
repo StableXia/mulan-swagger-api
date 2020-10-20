@@ -1,10 +1,10 @@
 const ora = require("ora");
 const inquirer = require("inquirer");
 const { genCode } = require("../core/codeGen");
-const { getTplConfig } = require("../core/parseConfig");
-const APIGenConfig = require("../api-gen.config");
+const { getTplConfig, getUserConfig } = require("../core/parseConfig");
 const { isExistsPath } = require("../helpers/files");
 
+const APIGenConfig = getUserConfig();
 const spinner = ora({ color: "yellow", text: "代码生成中..." });
 const YML = ".yml";
 

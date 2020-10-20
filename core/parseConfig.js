@@ -1,5 +1,10 @@
 const { isString, isObject } = require("../helpers/utils");
-const { parsePath, scanDir } = require("../helpers/files");
+const { parsePath, scanDir, joinPath } = require("../helpers/files");
+
+function getUserConfig() {
+  const url = joinPath(process.cwd(), "api-gen.config");
+  return require(url);
+}
 
 function getPathParse(filePath) {
   const parseObj = parsePath(filePath);
@@ -43,4 +48,5 @@ async function getTplConfig(tplOpts) {
 
 module.exports = {
   getTplConfig,
+  getUserConfig,
 };

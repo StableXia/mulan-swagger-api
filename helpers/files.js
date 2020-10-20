@@ -76,4 +76,5 @@ module.exports = {
   getFileStat,
   scanDir,
   isExistsPath,
+  joinPath,
 };
