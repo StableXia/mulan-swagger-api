@@ -3,13 +3,13 @@ info:
   title: OpenAPI definition
   version: v0
 servers:
-- url: http://127.0.0.1:8080
-  description: Generated server url
+  - url: http://127.0.0.1:8080
+    description: Generated server url
 paths:
   /api/v1/mulan/orderItems/clear:
     put:
       tags:
-      - move-in-out-controller
+        - move-in-out-controller
       operationId: clear
       requestBody:
         content:
@@ -23,13 +23,13 @@ paths:
         200:
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: boolean
   /api/v1/mulan/orderItems/moveIn:
     put:
       tags:
-      - move-in-out-controller
+        - move-in-out-controller
       operationId: moveIn
       requestBody:
         content:
@@ -43,13 +43,13 @@ paths:
         200:
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: boolean
   /api/v1/mulan/orderItems/moveOut:
     put:
       tags:
-      - move-in-out-controller
+        - move-in-out-controller
       operationId: moveOut
       requestBody:
         content:
@@ -63,48 +63,48 @@ paths:
         200:
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: boolean
   /api/v1/mulan/order:
     post:
       tags:
-      - order-admin-controller
+        - order-admin-controller
       operationId: createOrder
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ServiceOrderDTO'
+              $ref: "#/components/schemas/ServiceOrderDTO"
       responses:
         200:
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
-                $ref: '#/components/schemas/OrderCreatedVO'
+                $ref: "#/components/schemas/OrderCreatedVO"
   /api/v1/mulan/orderItem/{orderItemUuid}/confirm:
     put:
       tags:
-      - order-admin-controller
+        - order-admin-controller
       operationId: confirmOrder
       parameters:
-      - name: orderItemUuid
-        in: path
-        required: true
-        schema:
-          type: string
+        - name: orderItemUuid
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         200:
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: boolean
   /api/v1/mulan/orderItems/cancel:
     put:
       tags:
-      - order-admin-controller
+        - order-admin-controller
       operationId: cancelOrder
       requestBody:
         content:
@@ -118,294 +118,294 @@ paths:
         200:
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: boolean
   /api/v1/mulan/orderItems/finish:
     put:
       tags:
-      - order-admin-controller
+        - order-admin-controller
       operationId: finishOrder
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/OrderFinishDTO'
+              $ref: "#/components/schemas/OrderFinishDTO"
         required: true
       responses:
         200:
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: boolean
   /api/v1/mulan/orderItems:
     get:
       tags:
-      - order-admin-controller
+        - order-admin-controller
       operationId: listOrders
       parameters:
-      - name: locationUuid
-        in: query
-        required: true
-        schema:
-          type: string
-      - name: keyword
-        in: query
-        required: true
-        schema:
-          type: string
-      - name: orderStatus
-        in: query
-        required: true
-        schema:
-          type: string
-      - name: orderType
-        in: query
-        required: true
-        schema:
-          type: string
-      - name: cycleType
-        in: query
-        required: true
-        schema:
-          type: string
-      - name: startTime
-        in: query
-        required: true
-        schema:
-          type: integer
-          format: int64
-      - name: endTime
-        in: query
-        required: true
-        schema:
-          type: integer
-          format: int64
-      - name: page
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 1
-      - name: size
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 10
+        - name: locationUuid
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: keyword
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: orderStatus
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: orderType
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: cycleType
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: startTime
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: endTime
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 1
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 10
       responses:
         200:
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/OrderListVO'
+                  $ref: "#/components/schemas/OrderListVO"
   /api/v1/mulan/orderItem/{orderItemUuid}:
     get:
       tags:
-      - order-admin-controller
+        - order-admin-controller
       operationId: getOrderDetail
       parameters:
-      - name: orderItemUuid
-        in: path
-        required: true
-        schema:
-          type: string
+        - name: orderItemUuid
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         200:
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
-                $ref: '#/components/schemas/OrderVO'
+                $ref: "#/components/schemas/OrderVO"
   /api/v1/mulan/orderItem/{orderItemUuid}/remark:
     put:
       tags:
-      - order-admin-controller
+        - order-admin-controller
       operationId: editRemark
       parameters:
-      - name: orderItemUuid
-        in: path
-        required: true
-        schema:
-          type: string
-      - name: remark
-        in: query
-        required: true
-        schema:
-          type: string
+        - name: orderItemUuid
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: remark
+          in: query
+          required: true
+          schema:
+            type: string
       responses:
         200:
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: boolean
   /api/v1/crm/contract/{contractNo}:
     get:
       tags:
-      - order-crm-controller
+        - order-crm-controller
       operationId: getOrder
       parameters:
-      - name: contractNo
-        in: path
-        required: true
-        schema:
-          type: string
+        - name: contractNo
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         200:
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
-                $ref: '#/components/schemas/OrderVO'
+                $ref: "#/components/schemas/OrderVO"
   /api/v1/crm/order:
     post:
       tags:
-      - order-crm-controller
+        - order-crm-controller
       operationId: createOrder_1
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SpaceOrderDTO'
+              $ref: "#/components/schemas/SpaceOrderDTO"
         required: true
       responses:
         200:
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
-                $ref: '#/components/schemas/OrderNoVO'
+                $ref: "#/components/schemas/OrderNoVO"
   /api/v1/crm/contract/{contractNo}/confirm:
     put:
       tags:
-      - order-crm-controller
+        - order-crm-controller
       operationId: confirmOrder_1
       parameters:
-      - name: contractNo
-        in: path
-        required: true
-        schema:
-          type: string
+        - name: contractNo
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         200:
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: boolean
   /api/v1/crm/contract/{contractNo}/cancel:
     put:
       tags:
-      - order-crm-controller
+        - order-crm-controller
       operationId: cancelOrder_1
       parameters:
-      - name: contractNo
-        in: path
-        required: true
-        schema:
-          type: string
+        - name: contractNo
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         200:
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: boolean
   /api/v1/crm/contract/{contractNo}/releaseFutureReserve:
     put:
       tags:
-      - order-crm-controller
+        - order-crm-controller
       operationId: releaseFutureReserve
       parameters:
-      - name: contractNo
-        in: path
-        required: true
-        schema:
-          type: string
+        - name: contractNo
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         200:
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: boolean
   /rpc/v1/contract/{contractNo}:
     get:
       tags:
-      - order-rpc-controller
+        - order-rpc-controller
       operationId: getOrder_1
       parameters:
-      - name: contractNo
-        in: path
-        required: true
-        schema:
-          type: string
+        - name: contractNo
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         200:
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
-                $ref: '#/components/schemas/OrderVO'
+                $ref: "#/components/schemas/OrderVO"
   /rpc/v1/orders:
     get:
       tags:
-      - order-rpc-controller
+        - order-rpc-controller
       operationId: getOrders
       parameters:
-      - name: customerUuids
-        in: query
-        required: true
-        schema:
-          type: string
-      - name: orderStatus
-        in: query
-        required: true
-        schema:
-          type: string
-      - name: orderType
-        in: query
-        required: true
-        schema:
-          type: string
+        - name: customerUuids
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: orderStatus
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: orderType
+          in: query
+          required: true
+          schema:
+            type: string
       responses:
         200:
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/OrderVO'
+                  $ref: "#/components/schemas/OrderVO"
   /api/v1/fe/morningRun:
     post:
       tags:
-      - schedule-controller
+        - schedule-controller
       operationId: morningRun
       responses:
         200:
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: boolean
   /ping:
     get:
       tags:
-      - ping-controller
+        - ping-controller
       operationId: ping
       responses:
         200:
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: object
                 additionalProperties:
@@ -484,7 +484,7 @@ components:
         orderItems:
           type: array
           items:
-            $ref: '#/components/schemas/OrderItemDTO'
+            $ref: "#/components/schemas/OrderItemDTO"
         contractNo:
           type: string
         officeOrDeskUuid:
@@ -492,7 +492,7 @@ components:
         discountItems:
           type: array
           items:
-            $ref: '#/components/schemas/DiscountItemDTO'
+            $ref: "#/components/schemas/DiscountItemDTO"
     OrderCreatedVO:
       type: object
       properties:
@@ -576,7 +576,7 @@ components:
         action:
           type: array
           items:
-            $ref: '#/components/schemas/ActionVO'
+            $ref: "#/components/schemas/ActionVO"
     DiscountItemVO:
       type: object
       properties:
@@ -676,7 +676,7 @@ components:
         action:
           type: array
           items:
-            $ref: '#/components/schemas/ActionVO'
+            $ref: "#/components/schemas/ActionVO"
     OrderVO:
       type: object
       properties:
@@ -736,15 +736,15 @@ components:
           type: integer
           format: int64
         salesPolicy:
-          $ref: '#/components/schemas/SalesPolicyVO'
+          $ref: "#/components/schemas/SalesPolicyVO"
         orderItems:
           type: array
           items:
-            $ref: '#/components/schemas/OrderItemVO'
+            $ref: "#/components/schemas/OrderItemVO"
         discountItems:
           type: array
           items:
-            $ref: '#/components/schemas/DiscountItemVO'
+            $ref: "#/components/schemas/DiscountItemVO"
     SalesPolicyVO:
       type: object
     CompanyDTO:
@@ -780,9 +780,9 @@ components:
         orderItems:
           type: array
           items:
-            $ref: '#/components/schemas/OrderItemDTO'
+            $ref: "#/components/schemas/OrderItemDTO"
         companyDTO:
-          $ref: '#/components/schemas/CompanyDTO'
+          $ref: "#/components/schemas/CompanyDTO"
         contractNo:
           type: string
         relatedContractNo:

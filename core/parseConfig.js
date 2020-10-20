@@ -1,25 +1,38 @@
 const { isString, isObject } = require("../helpers/utils");
-const path = require("path");
+const { parsePath, scanDir } = require("../helpers/files");
 
-function pathParse(filePath) {
-  const parseObj = path.parse(filePath);
+function getPathParse(filePath) {
+  const parseObj = parsePath(filePath);
 
   return {
+    ...parseObj,
     name: parseObj.name,
     path: filePath,
   };
 }
 
-function getTplConfig(tplOpts) {
+async function getTplConfig(tplOpts) {
   if (isString(tplOpts)) {
-    return [pathParse(tplOpts)];
+    return [getPathParse(tplOpts)];
   }
 
   if (isObject(tplOpts)) {
+    const fileList = await scanDir(tplOpts.dir);
+
+    return fileList.map((v) => {
+      const parseObj = getPathParse(v.path);
+
+      return {
+        ...parseObj,
+        name: tplOpts.setFileName
+          ? tplOpts.setFileName(parseObj.name, parseObj.ext) || parseObj.name
+          : parseObj.name,
+      };
+    });
   }
 
   return tplOpts.map((v) => {
-    const parseObj = pathParse(v.path);
+    const parseObj = getPathParse(v.path);
 
     return {
       ...parseObj,
