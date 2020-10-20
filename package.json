@@ -19,7 +19,6 @@
   },
   "homepage": "https://github.com/xiaotangdou/mulan-swagger-api#readme",
   "dependencies": {
-    "axios": "^0.20.0",
     "ejs": "^3.1.5",
     "inquirer": "^7.3.3",
     "js-yaml": "^3.14.0",
