@@ -1,6 +1,8 @@
-const { promisify } = require("util");
-const { resolve, parse, join } = require("path");
-const fs = require("fs");
+/* eslint-disable */
+
+const { promisify } = require('util');
+const { resolve, parse, join } = require('path');
+const fs = require('fs');
 
 const parsePath = (filePath) => parse(filePath);
 
@@ -23,7 +25,7 @@ const isExistsPath = promisify(fs.exists);
 function createDir(dirPath) {
   return fsMkdir(dirPath).then(
     () => true,
-    () => false
+    () => false,
   );
 }
 
@@ -49,13 +51,13 @@ async function scanDir(dirPath, deep) {
 
           if (fileStat.isFile()) {
             temp.push({
-              dir: dir,
+              dir,
               path: filePath,
             });
           } else if (fileStat.isDirectory() && deep) {
             await loopDir(filePath);
           }
-        })()
+        })(),
       );
 
       await Promise.all(promiseList);

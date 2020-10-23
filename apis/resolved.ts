@@ -1,4 +1,11 @@
-import { useCallback } from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any, prefer-const */
+/**
+ * 该文件是根据后端的 API 文档自动生成，禁止修改
+ * 
+ * title: OpenAPI definition
+ * description: 
+ * version: v0
+ */
 import type { AxiosTransformer, AxiosRequestConfig } from 'axios';
 
 
@@ -8,72 +15,76 @@ import type { AxiosTransformer, AxiosRequestConfig } from 'axios';
 * @name 
 * 
 */
-export function clear (
+export function clear(
   payload?: {
     },
   transformers?: AxiosTransformer[] | AxiosTransformer,
 ) {
   let url = '/api/v1/mulan/orderItems/clear';
-  return useCallback((): AxiosRequestConfig => ({
+  return (): AxiosRequestConfig => ({
     url,
     method: 'PUT',
     transformResponse: transformers,
     data: payload,
-  }))
+    params: payload
+  })
 }
 
 /**
 * @name 
 * 
 */
-export function moveIn (
+export function moveIn(
   payload?: {
     },
   transformers?: AxiosTransformer[] | AxiosTransformer,
 ) {
   let url = '/api/v1/mulan/orderItems/moveIn';
-  return useCallback((): AxiosRequestConfig => ({
+  return (): AxiosRequestConfig => ({
     url,
     method: 'PUT',
     transformResponse: transformers,
     data: payload,
-  }))
+    params: payload
+  })
 }
 
 /**
 * @name 
 * 
 */
-export function moveOut (
+export function moveOut(
   payload?: {
     },
   transformers?: AxiosTransformer[] | AxiosTransformer,
 ) {
   let url = '/api/v1/mulan/orderItems/moveOut';
-  return useCallback((): AxiosRequestConfig => ({
+  return (): AxiosRequestConfig => ({
     url,
     method: 'PUT',
     transformResponse: transformers,
     data: payload,
-  }))
+    params: payload
+  })
 }
 
 /**
 * @name 
 * 
 */
-export function createOrder (
+export function createOrder(
   payload?: {
     },
   transformers?: AxiosTransformer[] | AxiosTransformer,
 ) {
   let url = '/api/v1/mulan/order';
-  return useCallback((): AxiosRequestConfig => ({
+  return (): AxiosRequestConfig => ({
     url,
     method: 'POST',
     transformResponse: transformers,
     data: payload,
-  }))
+    params: payload
+  })
 }
 
 /**
@@ -81,91 +92,81 @@ export function createOrder (
 * 
 * @param  orderItemUuid - 
 */
-export function confirmOrder (
+export function confirmOrder(
   payload?: {
   'orderItemUuid':string,
-      },
+    },
   transformers?: AxiosTransformer[] | AxiosTransformer,
 ) {
   let url = '/api/v1/mulan/orderItem/{orderItemUuid}/confirm';
-url = url.replace('{orderItemUuid}',payload.orderItemUuid);  return useCallback((): AxiosRequestConfig => ({
+url = url.replace('{orderItemUuid}',payload.orderItemUuid);  return (): AxiosRequestConfig => ({
     url,
     method: 'PUT',
     transformResponse: transformers,
     data: payload,
-  }))
+    params: payload
+  })
 }
 
 /**
 * @name 
 * 
 */
-export function cancelOrder (
+export function cancelOrder(
   payload?: {
     },
   transformers?: AxiosTransformer[] | AxiosTransformer,
 ) {
   let url = '/api/v1/mulan/orderItems/cancel';
-  return useCallback((): AxiosRequestConfig => ({
+  return (): AxiosRequestConfig => ({
     url,
     method: 'PUT',
     transformResponse: transformers,
     data: payload,
-  }))
+    params: payload
+  })
 }
 
 /**
 * @name 
 * 
 */
-export function finishOrder (
+export function finishOrder(
   payload?: {
     },
   transformers?: AxiosTransformer[] | AxiosTransformer,
 ) {
   let url = '/api/v1/mulan/orderItems/finish';
-  return useCallback((): AxiosRequestConfig => ({
+  return (): AxiosRequestConfig => ({
     url,
     method: 'PUT',
     transformResponse: transformers,
     data: payload,
-  }))
+    params: payload
+  })
 }
 
 /**
 * @name 
 * 
-* @param  locationUuid - 
-* @param  keyword - 
-* @param  orderStatus - 
-* @param  orderType - 
-* @param  cycleType - 
-* @param  startTime - 
-* @param  endTime - 
 * @param  page - 
 * @param  size - 
 */
-export function listOrders (
+export function listOrders(
   payload?: {
-  'locationUuid':string,
-    'keyword':string,
-    'orderStatus':string,
-    'orderType':string,
-    'cycleType':string,
-    'startTime':number,
-    'endTime':number,
-    'page'?:number,
-    'size'?:number,
-      },
+  'page'?:number,
+  'size'?:number,
+    },
   transformers?: AxiosTransformer[] | AxiosTransformer,
 ) {
   let url = '/api/v1/mulan/orderItems';
-  return useCallback((): AxiosRequestConfig => ({
+  return (): AxiosRequestConfig => ({
     url,
     method: 'GET',
     transformResponse: transformers,
     data: payload,
-  }))
+    params: payload
+  })
 }
 
 /**
@@ -173,41 +174,20 @@ export function listOrders (
 * 
 * @param  orderItemUuid - 
 */
-export function getOrderDetail (
+export function getOrderDetail(
   payload?: {
   'orderItemUuid':string,
-      },
+    },
   transformers?: AxiosTransformer[] | AxiosTransformer,
 ) {
   let url = '/api/v1/mulan/orderItem/{orderItemUuid}';
-url = url.replace('{orderItemUuid}',payload.orderItemUuid);  return useCallback((): AxiosRequestConfig => ({
+url = url.replace('{orderItemUuid}',payload.orderItemUuid);  return (): AxiosRequestConfig => ({
     url,
     method: 'GET',
     transformResponse: transformers,
     data: payload,
-  }))
-}
-
-/**
-* @name 
-* 
-* @param  orderItemUuid - 
-* @param  remark - 
-*/
-export function editRemark (
-  payload?: {
-  'orderItemUuid':string,
-    'remark':string,
-      },
-  transformers?: AxiosTransformer[] | AxiosTransformer,
-) {
-  let url = '/api/v1/mulan/orderItem/{orderItemUuid}/remark';
-url = url.replace('{orderItemUuid}',payload.orderItemUuid);  return useCallback((): AxiosRequestConfig => ({
-    url,
-    method: 'PUT',
-    transformResponse: transformers,
-    data: payload,
-  }))
+    params: payload
+  })
 }
 
 /**
@@ -215,37 +195,39 @@ url = url.replace('{orderItemUuid}',payload.orderItemUuid);  return useCallback(
 * 
 * @param  contractNo - 
 */
-export function getOrder (
+export function getOrder(
   payload?: {
   'contractNo':string,
-      },
+    },
   transformers?: AxiosTransformer[] | AxiosTransformer,
 ) {
   let url = '/api/v1/crm/contract/{contractNo}';
-url = url.replace('{contractNo}',payload.contractNo);  return useCallback((): AxiosRequestConfig => ({
+url = url.replace('{contractNo}',payload.contractNo);  return (): AxiosRequestConfig => ({
     url,
     method: 'GET',
     transformResponse: transformers,
     data: payload,
-  }))
+    params: payload
+  })
 }
 
 /**
 * @name 
 * 
 */
-export function createOrder_1 (
+export function createOrder_1(
   payload?: {
     },
   transformers?: AxiosTransformer[] | AxiosTransformer,
 ) {
   let url = '/api/v1/crm/order';
-  return useCallback((): AxiosRequestConfig => ({
+  return (): AxiosRequestConfig => ({
     url,
     method: 'POST',
     transformResponse: transformers,
     data: payload,
-  }))
+    params: payload
+  })
 }
 
 /**
@@ -253,19 +235,20 @@ export function createOrder_1 (
 * 
 * @param  contractNo - 
 */
-export function confirmOrder_1 (
+export function confirmOrder_1(
   payload?: {
   'contractNo':string,
-      },
+    },
   transformers?: AxiosTransformer[] | AxiosTransformer,
 ) {
   let url = '/api/v1/crm/contract/{contractNo}/confirm';
-url = url.replace('{contractNo}',payload.contractNo);  return useCallback((): AxiosRequestConfig => ({
+url = url.replace('{contractNo}',payload.contractNo);  return (): AxiosRequestConfig => ({
     url,
     method: 'PUT',
     transformResponse: transformers,
     data: payload,
-  }))
+    params: payload
+  })
 }
 
 /**
@@ -273,19 +256,20 @@ url = url.replace('{contractNo}',payload.contractNo);  return useCallback((): Ax
 * 
 * @param  contractNo - 
 */
-export function cancelOrder_1 (
+export function cancelOrder_1(
   payload?: {
   'contractNo':string,
-      },
+    },
   transformers?: AxiosTransformer[] | AxiosTransformer,
 ) {
   let url = '/api/v1/crm/contract/{contractNo}/cancel';
-url = url.replace('{contractNo}',payload.contractNo);  return useCallback((): AxiosRequestConfig => ({
+url = url.replace('{contractNo}',payload.contractNo);  return (): AxiosRequestConfig => ({
     url,
     method: 'PUT',
     transformResponse: transformers,
     data: payload,
-  }))
+    params: payload
+  })
 }
 
 /**
@@ -293,19 +277,20 @@ url = url.replace('{contractNo}',payload.contractNo);  return useCallback((): Ax
 * 
 * @param  contractNo - 
 */
-export function releaseFutureReserve (
+export function releaseFutureReserve(
   payload?: {
   'contractNo':string,
-      },
+    },
   transformers?: AxiosTransformer[] | AxiosTransformer,
 ) {
   let url = '/api/v1/crm/contract/{contractNo}/releaseFutureReserve';
-url = url.replace('{contractNo}',payload.contractNo);  return useCallback((): AxiosRequestConfig => ({
+url = url.replace('{contractNo}',payload.contractNo);  return (): AxiosRequestConfig => ({
     url,
     method: 'PUT',
     transformResponse: transformers,
     data: payload,
-  }))
+    params: payload
+  })
 }
 
 /**
@@ -313,19 +298,20 @@ url = url.replace('{contractNo}',payload.contractNo);  return useCallback((): Ax
 * 
 * @param  contractNo - 
 */
-export function getOrder_1 (
+export function getOrder_1(
   payload?: {
   'contractNo':string,
-      },
+    },
   transformers?: AxiosTransformer[] | AxiosTransformer,
 ) {
   let url = '/rpc/v1/contract/{contractNo}';
-url = url.replace('{contractNo}',payload.contractNo);  return useCallback((): AxiosRequestConfig => ({
+url = url.replace('{contractNo}',payload.contractNo);  return (): AxiosRequestConfig => ({
     url,
     method: 'GET',
     transformResponse: transformers,
     data: payload,
-  }))
+    params: payload
+  })
 }
 
 /**
@@ -335,56 +321,59 @@ url = url.replace('{contractNo}',payload.contractNo);  return useCallback((): Ax
 * @param  orderStatus - 
 * @param  orderType - 
 */
-export function getOrders (
+export function getOrders(
   payload?: {
   'customerUuids':string,
-    'orderStatus':string,
-    'orderType':string,
-      },
+  'orderStatus':string,
+  'orderType':string,
+    },
   transformers?: AxiosTransformer[] | AxiosTransformer,
 ) {
   let url = '/rpc/v1/orders';
-  return useCallback((): AxiosRequestConfig => ({
+  return (): AxiosRequestConfig => ({
     url,
     method: 'GET',
     transformResponse: transformers,
     data: payload,
-  }))
+    params: payload
+  })
 }
 
 /**
 * @name 
 * 
 */
-export function morningRun (
+export function morningRun(
   payload?: {
     },
   transformers?: AxiosTransformer[] | AxiosTransformer,
 ) {
   let url = '/api/v1/fe/morningRun';
-  return useCallback((): AxiosRequestConfig => ({
+  return (): AxiosRequestConfig => ({
     url,
     method: 'POST',
     transformResponse: transformers,
     data: payload,
-  }))
+    params: payload
+  })
 }
 
 /**
 * @name 
 * 
 */
-export function ping (
+export function ping(
   payload?: {
     },
   transformers?: AxiosTransformer[] | AxiosTransformer,
 ) {
   let url = '/ping';
-  return useCallback((): AxiosRequestConfig => ({
+  return (): AxiosRequestConfig => ({
     url,
     method: 'GET',
     transformResponse: transformers,
     data: payload,
-  }))
+    params: payload
+  })
 }
 

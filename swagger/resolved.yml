@@ -4,7 +4,7 @@ info:
   version: v0
 servers:
   - url: http://127.0.0.1:8080
-    description: Generated server url
+    description: mulan order
 paths:
   /api/v1/mulan/orderItems/clear:
     put:
@@ -145,43 +145,6 @@ paths:
         - order-admin-controller
       operationId: listOrders
       parameters:
-        - name: locationUuid
-          in: query
-          required: true
-          schema:
-            type: string
-        - name: keyword
-          in: query
-          required: true
-          schema:
-            type: string
-        - name: orderStatus
-          in: query
-          required: true
-          schema:
-            type: string
-        - name: orderType
-          in: query
-          required: true
-          schema:
-            type: string
-        - name: cycleType
-          in: query
-          required: true
-          schema:
-            type: string
-        - name: startTime
-          in: query
-          required: true
-          schema:
-            type: integer
-            format: int64
-        - name: endTime
-          in: query
-          required: true
-          schema:
-            type: integer
-            format: int64
         - name: page
           in: query
           required: false
@@ -223,29 +186,6 @@ paths:
             "*/*":
               schema:
                 $ref: "#/components/schemas/OrderVO"
-  /api/v1/mulan/orderItem/{orderItemUuid}/remark:
-    put:
-      tags:
-        - order-admin-controller
-      operationId: editRemark
-      parameters:
-        - name: orderItemUuid
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: remark
-          in: query
-          required: true
-          schema:
-            type: string
-      responses:
-        200:
-          description: OK
-          content:
-            "*/*":
-              schema:
-                type: boolean
   /api/v1/crm/contract/{contractNo}:
     get:
       tags:
@@ -487,8 +427,6 @@ components:
             $ref: "#/components/schemas/OrderItemDTO"
         contractNo:
           type: string
-        officeOrDeskUuid:
-          type: string
         discountItems:
           type: array
           items:
@@ -533,12 +471,12 @@ components:
         createdDate:
           type: integer
           format: int64
-        creatorUuid:
+        createdBy:
           type: string
         lastModifiedDate:
           type: integer
           format: int64
-        lastModifierUuid:
+        lastModifiedBy:
           type: string
         isDeleted:
           type: boolean
@@ -547,32 +485,31 @@ components:
           format: int64
         orderItemNo:
           type: string
+          description: 订单号
         amount:
           type: number
+          description: 订单总额
         companyName:
           type: string
-        companyCode:
+          description: 公司名称
+        mainMember:
           type: string
-        primaryMember:
+          description: 主会员号
+        orderType:
           type: string
-        primaryMemberEmail:
-          type: string
-        orderStatus:
-          type: string
+          description: 订单状态
+          enum:
+            - SPACE
+            - SERVICE
+            - MIX
         startTime:
           type: integer
           format: int64
+          description: 订单开始时间
         endTime:
           type: integer
           format: int64
-        orderType:
-          type: string
-        cycleType:
-          type: string
-        billingStatus:
-          type: string
-        remark:
-          type: string
+          description: 订单结束时间
         action:
           type: array
           items:
@@ -588,12 +525,12 @@ components:
         createdDate:
           type: integer
           format: int64
-        creatorUuid:
+        createdBy:
           type: string
         lastModifiedDate:
           type: integer
           format: int64
-        lastModifierUuid:
+        lastModifiedBy:
           type: string
         isDeleted:
           type: boolean
@@ -618,12 +555,12 @@ components:
         createdDate:
           type: integer
           format: int64
-        creatorUuid:
+        createdBy:
           type: string
         lastModifiedDate:
           type: integer
           format: int64
-        lastModifierUuid:
+        lastModifiedBy:
           type: string
         isDeleted:
           type: boolean
@@ -671,8 +608,6 @@ components:
           type: string
         orderItemNo:
           type: string
-        billingStatus:
-          type: string
         action:
           type: array
           items:
@@ -688,12 +623,12 @@ components:
         createdDate:
           type: integer
           format: int64
-        creatorUuid:
+        createdBy:
           type: string
         lastModifiedDate:
           type: integer
           format: int64
-        lastModifierUuid:
+        lastModifiedBy:
           type: string
         isDeleted:
           type: boolean
@@ -732,9 +667,6 @@ components:
           type: string
         contractType:
           type: string
-        noticeDate:
-          type: integer
-          format: int64
         salesPolicy:
           $ref: "#/components/schemas/SalesPolicyVO"
         orderItems:
@@ -798,3 +730,29 @@ components:
       properties:
         orderNo:
           type: string
+    PageInfoOrderListVO:
+      type: object
+      properties:
+        page:
+          type: integer
+          format: int32
+          description: 页码
+          default: 0
+        pageSize:
+          type: integer
+          format: int32
+          description: 分页大小
+          default: 50
+        totalRows:
+          type: integer
+          format: int64
+          description: 总条数
+        totalPages:
+          type: integer
+          format: int32
+          description: 总页数
+        rows:
+          type: array
+          description: 订单信息
+          items:
+            $ref: "#/components/schemas/OrderListVO"

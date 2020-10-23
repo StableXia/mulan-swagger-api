@@ -1,6 +1,13 @@
-const isString = (v) => Object.prototype.toString.call(v) === "[object String]";
+/* eslint-disable */
 
-const isObject = (v) => Object.prototype.toString.call(v) === "[object Object]";
+const isString = (v) => Object.prototype.toString.call(v) === '[object String]';
+
+const isObject = (v) => Object.prototype.toString.call(v) === '[object Object]';
+
+const isFunction = (v) =>
+  Object.prototype.toString.call(v) === '[object Function]';
+
+const isArray = (v) => Array.isArray(v);
 
 function forEach(obj, fn) {
   if (!obj) return;
@@ -33,4 +40,6 @@ module.exports = {
   forEach,
   pickFields,
   sleep,
+  isArray,
+  isFunction,
 };

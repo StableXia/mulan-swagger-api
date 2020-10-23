@@ -1,12 +1,13 @@
-const ora = require("ora");
-const inquirer = require("inquirer");
-const { genCode } = require("../core/codeGen");
-const { getTplConfig, getUserConfig } = require("../core/parseConfig");
-const { isExistsPath } = require("../helpers/files");
+/* eslint-disable */
+const ora = require('ora');
+const inquirer = require('inquirer');
+const { genCode } = require('../core/codeGen');
+const { getTplConfig, getUserConfig } = require('../core/parseConfig');
+const { isExistsPath } = require('../helpers/files');
 
 const APIGenConfig = getUserConfig();
-const spinner = ora({ color: "yellow", text: "代码生成中..." });
-const YML = ".yml";
+const spinner = ora({ color: 'yellow', text: '代码生成中...' });
+const YML = '.yml';
 
 async function main() {
   const tplConfigArr = await getTplConfig(APIGenConfig.tpl);
@@ -14,13 +15,13 @@ async function main() {
   for (let i = 0; i < tplConfigArr.length; i++) {
     if (tplConfigArr[i].ext === YML) {
       const isExist = await isExistsPath(
-        `${APIGenConfig.output}/${tplConfigArr[i].name}.ts`
+        `${APIGenConfig.output}/${tplConfigArr[i].name}.ts`,
       );
 
       if (isExist) {
         const { override } = await inquirer.prompt({
-          type: "confirm",
-          name: "override",
+          type: 'confirm',
+          name: 'override',
           message: `${tplConfigArr[i].name}.ts 文件已经存在，是否覆盖？`,
         });
 
@@ -28,14 +29,14 @@ async function main() {
           genCode(
             tplConfigArr[i].path,
             tplConfigArr[i].name,
-            APIGenConfig.output
+            APIGenConfig.output,
           );
         }
       } else {
         genCode(
           tplConfigArr[i].path,
           tplConfigArr[i].name,
-          APIGenConfig.output
+          APIGenConfig.output,
         );
       }
     }
