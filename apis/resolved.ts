@@ -11,6 +11,8 @@ import type { AxiosTransformer, AxiosRequestConfig } from 'axios';
 
 
 
+
+type undefined
 /**
 * @name 
 * 
@@ -30,6 +32,8 @@ export function clear(
   })
 }
 
+
+type undefined
 /**
 * @name 
 * 
@@ -49,6 +53,8 @@ export function moveIn(
   })
 }
 
+
+type undefined
 /**
 * @name 
 * 
@@ -68,6 +74,8 @@ export function moveOut(
   })
 }
 
+
+type undefined
 /**
 * @name 
 * 
@@ -87,6 +95,8 @@ export function createOrder(
   })
 }
 
+
+type undefined
 /**
 * @name 
 * 
@@ -108,6 +118,8 @@ url = url.replace('{orderItemUuid}',payload.orderItemUuid);  return (): AxiosReq
   })
 }
 
+
+type undefined
 /**
 * @name 
 * 
@@ -127,6 +139,8 @@ export function cancelOrder(
   })
 }
 
+
+type undefined
 /**
 * @name 
 * 
@@ -146,6 +160,8 @@ export function finishOrder(
   })
 }
 
+
+type undefined
 /**
 * @name 
 * 
@@ -169,6 +185,8 @@ export function listOrders(
   })
 }
 
+
+type undefined
 /**
 * @name 
 * 
@@ -190,6 +208,8 @@ url = url.replace('{orderItemUuid}',payload.orderItemUuid);  return (): AxiosReq
   })
 }
 
+
+type undefined
 /**
 * @name 
 * 
@@ -211,6 +231,8 @@ url = url.replace('{contractNo}',payload.contractNo);  return (): AxiosRequestCo
   })
 }
 
+
+type undefined
 /**
 * @name 
 * 
@@ -230,6 +252,8 @@ export function createOrder_1(
   })
 }
 
+
+type undefined
 /**
 * @name 
 * 
@@ -251,6 +275,8 @@ url = url.replace('{contractNo}',payload.contractNo);  return (): AxiosRequestCo
   })
 }
 
+
+type undefined
 /**
 * @name 
 * 
@@ -272,6 +298,8 @@ url = url.replace('{contractNo}',payload.contractNo);  return (): AxiosRequestCo
   })
 }
 
+
+type undefined
 /**
 * @name 
 * 
@@ -293,6 +321,8 @@ url = url.replace('{contractNo}',payload.contractNo);  return (): AxiosRequestCo
   })
 }
 
+
+type undefined
 /**
 * @name 
 * 
@@ -314,6 +344,8 @@ url = url.replace('{contractNo}',payload.contractNo);  return (): AxiosRequestCo
   })
 }
 
+
+type undefined
 /**
 * @name 
 * 
@@ -339,6 +371,8 @@ export function getOrders(
   })
 }
 
+
+type undefined
 /**
 * @name 
 * 
@@ -358,6 +392,8 @@ export function morningRun(
   })
 }
 
+
+type undefined
 /**
 * @name 
 * 

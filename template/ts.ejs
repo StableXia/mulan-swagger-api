@@ -18,6 +18,8 @@ import type { AxiosTransformer, AxiosRequestConfig } from 'axios';
 <%})%>
 
 <% methods.forEach( method => {%>
+
+type <%=`${method.methodName}`%>
 /**
 * @name <%=method.summary%>
 * <% method.parameters.forEach(parameter => {%>
