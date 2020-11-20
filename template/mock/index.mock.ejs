@@ -1,0 +1,15 @@
+<%filenameList.forEach(filename => {%>
+const <%-filename%> = require('./<%-filename%>');
+<%})%>
+
+const apis = {
+  <%filenameList.forEach(filename => {%>
+    <%-filename%>,
+  <%})%>
+}
+
+module.exports = {
+  apis
+};
+
+

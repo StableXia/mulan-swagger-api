@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 const yaml = require('js-yaml');
 
 const convertYmlToJson = (content) => {

@@ -1,43 +1,33 @@
-/* eslint-disable */
-const ora = require('ora');
-const inquirer = require('inquirer');
-const { genCode } = require('../core/codeGen');
+const { genTsCode, genMockCode, getSwaggerData } = require('../core/codeGen');
 const { getTplConfig, getUserConfig } = require('../core/parseConfig');
-const { isExistsPath } = require('../helpers/files');
 
 const APIGenConfig = getUserConfig();
-const spinner = ora({ color: 'yellow', text: '代码生成中...' });
-const YML = '.yml';
+const YML = ['.yml', '.yaml'];
 
+// TODO: 配置合法校验
 async function main() {
-  const tplConfigArr = await getTplConfig(APIGenConfig.tpl);
+  const tplConfigArr = await getTplConfig(APIGenConfig);
 
   for (let i = 0; i < tplConfigArr.length; i++) {
-    if (tplConfigArr[i].ext === YML) {
-      const isExist = await isExistsPath(
-        `${APIGenConfig.output}/${tplConfigArr[i].name}.ts`,
-      );
+    if (YML.includes(tplConfigArr[i].ext)) {
+      // 获取格式化后的 openapi 文档
+      const swaggerData = await getSwaggerData(tplConfigArr[i].path);
 
-      if (isExist) {
-        const { override } = await inquirer.prompt({
-          type: 'confirm',
-          name: 'override',
-          message: `${tplConfigArr[i].name}.ts 文件已经存在，是否覆盖？`,
+      /******************** api 文件生成 *********************************************/
+      await genTsCode({
+        swaggerData,
+        name: tplConfigArr[i].name,
+        output: APIGenConfig.output.path,
+      });
+
+      /******************** mock 文件生成 *********************************************/
+      if (APIGenConfig.mock.open) {
+        await genMockCode({
+          swaggerData,
+          name: tplConfigArr[i].name,
+          output: APIGenConfig.mock.path,
+          sourceName: tplConfigArr[i].sourceName,
         });
-
-        if (override) {
-          genCode(
-            tplConfigArr[i].path,
-            tplConfigArr[i].name,
-            APIGenConfig.output,
-          );
-        }
-      } else {
-        genCode(
-          tplConfigArr[i].path,
-          tplConfigArr[i].name,
-          APIGenConfig.output,
-        );
       }
     }
   }

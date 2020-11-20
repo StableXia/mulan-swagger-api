@@ -1,24 +1,22 @@
 const path = require("path");
 
 module.exports = {
-  output: path.resolve(__dirname, "./apis"),
+  mock: {
+    // 是否生成 mock 文件
+    open: false,
+    // mock 文件的输出目录
+    path: path.resolve(__dirname, "./mocks/generators"),
+  },
+  output: {
+    // api 文件的输出目录
+    path: path.resolve(__dirname, "./packages/apis"),
+    // 生成文件的名字
+    filename: (filename, ext) => `${filename}.gen`,
+  },
   tpl: {
-    // local、remote
+    // 获取 openapi 模板的方式：local、remote
     mode: "local",
-
-    // api模板路径，string | array
-    // path: path.resolve(__dirname, './swagger/order.yml'),
-    // path: [
-    //   {
-    //     path: path.resolve(__dirname, './swagger/order.yml'),
-    //     name: (name, ext) => name,
-    //   },
-    // ],
-
-    // api模板目录，string
-    dir: path.resolve(__dirname, "./swagger"),
-
-    // 生成文件名称，function | string
-    name: (name, ext) => name,
+    // openapi 模板路径
+    path: path.resolve(__dirname, "./swagger/inventory.yaml"),
   },
 };

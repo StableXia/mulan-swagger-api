@@ -1,0 +1,1239 @@
+openapi: 3.0.0
+info:
+  title: China Member Service APIs
+  version: v1
+  contact:
+    name: Mulan Inventory Service
+    url: rock.yu@wework.com
+  x-log:
+    url: https://weconnect.github.io/china-mx-openapi/images/wework_logo.jpg
+servers:
+  - url: https://api-staging.wework.cn/chinaos/mulanInventoryService
+    description: Staging Server
+  - url: http://localhost:8080/mulanInventoryService
+    description: Local Development Server
+tags:
+  - name: mulan
+  - name: rpc
+x-tagGroups:
+  - name: API - v1
+    tags:
+      - mulan
+      - rpc
+components:
+  securitySchemes:
+    ChinaAccessToken:
+      type: apiKey
+      name: Authorization
+      in: header
+      description: "Send a token like this `X-CAT CHINA_ACCESS_TOKEN_VALUE` in
+        Authorization header. You can find the token for staging and development
+        here:
+        https://github.com/WeConnect/china-member-service/blob/master/user-core\
+        /docs/rpc/environment.md"
+paths:
+  /api/v1/rpc/products:
+    get:
+      tags:
+        - rpc
+      description: |
+        List product, filter by building uuids, product types, product status
+      operationId: products list
+      parameters:
+        - name: buildingUuid
+          in: query
+          description: filter by building's uuid
+          schema:
+            type: string
+            format: uuid
+        - name: productTypes
+          in: query
+          description: filter by product types
+          schema:
+            type: array
+            items:
+              type: string
+              description: product type
+              enum:
+                - PRIVATE_OFFICE
+                - HD
+                - DD
+        - name: productStatuses
+          in: query
+          description: filter by product statuses
+          schema:
+            type: array
+            items:
+              type: string
+              description: product status
+              enum:
+                - PENDING
+                - ON_SALE
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: code
+                    example: 0
+                    type: integer
+                  data:
+                    items:
+                      properties:
+                        buildingName:
+                          description: buildingName
+                          example: 中海国际
+                          type: string
+                        buildingUuid:
+                          description: buildingUuid
+                          example: c1461271-3de7-4334-86f8-33352a4c4766
+                          type: string
+                        hasWindow:
+                          description: hasWindow
+                          type: boolean
+                        hasInternalRoom:
+                          description: hasInternalRoom
+                          type: boolean
+                        productName:
+                          description: productName
+                          example: A-101
+                          type: string
+                        productType:
+                          description: productType
+                          example: PRIVATE_OFFICE
+                          $ref: '#/paths/~1api~1v1~1rpc~1products/get/parameters/1/schema/items'
+                        productUuid:
+                          description: productUuid
+                          example: 3cb9c78f-b0bc-42db-9dfd-dc2a8997ca1b
+                          type: string
+                        capacity:
+                          description: capacity
+                          example: 30
+                          type: integer
+                        status:
+                          description: status
+                          example: PENDING
+                          $ref: '#/paths/~1api~1v1~1rpc~1products/get/parameters/2/schema/items'
+                      type: object
+                    type: array
+                  msg:
+                    description: msg
+                    example: ''
+                    type: string
+  '/api/v1/rpc/products/{uuid}':
+    get:
+      tags:
+        - rpc
+      description: |
+        Get product detail info by uuid
+      operationId: product detail
+      parameters:
+        - name: uuid
+          in: path
+          description: product uuid
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: code
+                    example: 0
+                    type: integer
+                  data:
+                    properties:
+                      productName:
+                        description: productName
+                        example: 10-101A
+                        type: string
+                      productUuid:
+                        description: productUuid
+                        example: 5cb9c78f-b0bc-42db-9dfd-dc2a8997ca1b
+                        type: string
+                      productType:
+                        description: productType
+                        example: PRIVATE_OFFICE
+                        $ref: '#/paths/~1api~1v1~1rpc~1products/get/parameters/1/schema/items'
+                      buildingName:
+                        description: buildingName
+                        example: 娄山关
+                        type: string
+                      buildingUuid:
+                        description: buildingUuid
+                        example: c1461271-3de7-4334-86f8-33352a4c4766
+                        type: string
+                      floorName:
+                        description: floorName
+                        example: '17'
+                        type: string
+                      floorUuid:
+                        description: floorUuid
+                        example: a9s89le-3de7-4334-86f8-b7ss8
+                        type: string
+                      floorPlan:
+                        description: floorPlan
+                        example: http://test.com/floor.jpg
+                        type: string
+                      capacity:
+                        description: capacity
+                        example: 35
+                        type: integer
+                      status:
+                        description: status
+                        example: AVAILABLE
+                        $ref: '#/paths/~1api~1v1~1rpc~1products/get/parameters/2/schema/items'
+                      availableFrom:
+                        description: availableFrom
+                        example: 2020-11-01
+                        type: string
+                        format: date
+                      openAt:
+                        description: openAt
+                        example: 2020-11-01
+                        type: string
+                        format: date
+                      area:
+                        description: area
+                        example: 899
+                        type: integer
+                      community:
+                        description: community
+                        example: Menglei Zhang
+                        type: string
+                      hasWindow:
+                        description: hasWindow
+                        type: boolean
+                      hasInternalRoom:
+                        description: hasInternalRoom
+                        type: boolean
+                    type: object
+                  msg:
+                    description: msg
+                    example: ''
+                    type: string
+  /api/v1/rpc/products/availability:
+    get:
+      tags:
+        - rpc
+      description: |
+        Get and check product availability by order uuid
+      operationId: product availability
+      parameters:
+        - name: orderNumber
+          in: query
+          description: order uuid
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: code
+                    example: 0
+                    type: integer
+                  data:
+                    type: string
+                    description: product availability status
+                    enum:
+                      - AVAILABLE
+                      - OCCUPIED
+                      - ON_HOLD
+                  msg:
+                    description: msg
+                    example: ''
+                    type: string
+  /api/v1/rpc/products/reserve:
+    post:
+      tags:
+        - rpc
+      operationId: reserve
+      description: reserve a space product
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                productUuid:
+                  description: productUuid
+                  example: 5cb9c78f-b0bc-42db-9dfd-dc2a8997ca1b
+                  nullable: true
+                  type: string
+                startDate:
+                  description: startDate
+                  type: string
+                  nullable: true
+                  format: date
+                endDate:
+                  description: endDate
+                  type: string
+                  nullable: true
+                  format: date
+                orderNumber:
+                  description: orderNumber
+                  example: OR128904BVAD
+                  nullable: true
+                  type: string
+                companyUuid:
+                  description: companyUuid
+                  nullable: true
+                  example: d8065670-4896-0137-a556-0242ac112c0a
+                  type: string
+                notes:
+                  description: notes
+                  example: 华东大客户
+                  type: string
+                userUuid:
+                  description: userUuid
+                  example: c929213-4896-0137-a556-0242bbc
+                  type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: code
+                    example: 0
+                    type: integer
+                  data:
+                    properties:
+                      productUuid:
+                        description: productUuid
+                        example: 5cb9c78f-b0bc-42db-9dfd-dc2a8997ca1b
+                        type: string
+                      startDate:
+                        description: startDate
+                        example: 2020-11-03
+                        type: string
+                      endDate:
+                        description: endDate
+                        example: 2020-12-31
+                        type: string
+                      status:
+                        description: status
+                        example: OCCUPIED
+                        type: string
+                    type: object
+                  msg:
+                    description: msg
+                    example: ''
+                    type: string
+  /api/v1/rpc/products/release:
+    post:
+      tags:
+        - rpc
+      operationId: release
+      description: release a space product
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                productUuid:
+                  description: productUuid
+                  example: 5cb9c78f-b0bc-42db-9dfd-dc2a8997ca1b
+                  nullable: true
+                  type: string
+                startDate:
+                  description: startDate
+                  type: string
+                  nullable: true
+                  format: date
+                endDate:
+                  description: endDate
+                  type: string
+                  nullable: true
+                  format: date
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: code
+                    example: 0
+                    type: integer
+                  data:
+                    description: data
+                    type: boolean
+                  msg:
+                    description: msg
+                    example: ''
+                    type: string
+  /api/v1/rpc/products/put_on_sale:
+    post:
+      tags:
+        - rpc
+      operationId: put on sale
+      description: put product on sale
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+                example: a9s89le-3de7-4334-86f8-b7ss8
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref:
+                  "#/paths/~1api~1v1~1rpc~1products~1release/post/responses/200/content/app\
+                  lication~1json/schema"
+  /api/v1/rpc/products/endDate:
+    put:
+      tags:
+        - rpc
+      operationId: update end date
+      description: update on inventory end date
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                productUuid:
+                  description: orderNumber
+                  example: ORNO-5cb9c78fb0bc
+                  nullable: true
+                  type: string
+                endDate:
+                  description: endDate
+                  type: string
+                  nullable: true
+                  format: date
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref:
+                  "#/paths/~1api~1v1~1rpc~1products~1release/post/responses/200/content/app\
+                  lication~1json/schema"
+  /api/v1/mulan/resourceFile/logs:
+    post:
+      tags:
+        - mulan
+      description: |
+        List uploaded file log
+      operationId: resource log list
+      parameters:
+        - name: buildingUuid
+          in: query
+          required: false
+          description: filter by building's uuid
+          schema:
+            type: string
+            format: uuid
+        - name: floorUuid
+          in: query
+          required: false
+          description: filter by floor's uuid
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: code
+                    example: 0
+                    type: integer
+                  data:
+                    properties:
+                      list:
+                        items:
+                          properties:
+                            createdBy:
+                              description: createdBy
+                              example: s chen
+                              type: string
+                            createdTime:
+                              description: createdTime
+                              example: 1604298668827
+                              type: integer
+                            fileName:
+                              description: fileName
+                              example: China Overseas Building_20201027.xlsx
+                              type: string
+                            fileUuid:
+                              description: fileUuid
+                              example: c1461271-3de7-e8sc
+                              type: string
+                            buildingName:
+                              description: buildingName
+                              example: 中海国际
+                              type: string
+                            floorName:
+                              description: floorName
+                              example: 17F
+                              type: string
+                          type: object
+                        type: array
+                      total:
+                        description: total
+                        example: 20
+                        type: integer
+                    type: object
+                  msg:
+                    description: msg
+                    example: ''
+                    type: string
+  '/api/v1/mulan/resourceFile/{uuid}/download':
+    get:
+      tags:
+        - mulan
+      description: |
+        Download historical resource file
+      operationId: historical resource file download
+      parameters:
+        - name: uuid
+          in: path
+          description: resoure file uuid
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: 9d7441b0-200a-0134-22ec-76193f69ded5
+      responses:
+        '200':
+          description: successful operation
+          content:
+            text/csv:
+              schema:
+                type: string
+                format: binary
+  /api/v1/mulan/resources/download:
+    get:
+      tags:
+        - mulan
+      description: |
+        Download latest resource file
+      operationId: latest resource file download
+      parameters:
+        - name: buildingUuid
+          in: query
+          description: building uuid
+          schema:
+            type: string
+            format: uuid
+            example: 9d7441b0-200a-0134-22ec-76193f69ded5
+        - name: floorUuid
+          in: query
+          description: floor uuid
+          schema:
+            type: string
+            format: uuid
+            example: 9d7441b0-200a-0134-22ec-828skac
+      responses:
+        '200':
+          description: successful operation
+          content:
+            text/csv:
+              schema:
+                type: string
+                format: binary
+  /api/v1/mulan/resourceFile/preprocess:
+    post:
+      tags:
+        - mulan
+      description: |
+        preprocess resource file upload
+      operationId: preprocess resource file
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                uploadFile:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: code
+                    example: 0
+                    type: integer
+                  data:
+                    properties:
+                      fileUuid:
+                        description: fileUuid
+                        example: file-uuid
+                        type: string
+                      errorItems:
+                        items:
+                          properties:
+                            resourceName:
+                              description: resourceName
+                              example: 01-201
+                              type: string
+                            buildingName:
+                              description: buildingName
+                              example: 中海国际
+                              type: string
+                            reason:
+                              description: reason
+                              example: capacity 不能为空
+                              type: string
+                          type: object
+                        type: array
+                      diffItems:
+                        items:
+                          properties:
+                            buildingName:
+                              properties:
+                                before:
+                                  description: before
+                                  example: 中海国际
+                                  type: string
+                                after:
+                                  description: after
+                                  example: 中海国际
+                                  type: string
+                              type: object
+                            resourceName:
+                              properties:
+                                before:
+                                  description: before
+                                  example: 01-101
+                                  type: string
+                                after:
+                                  description: after
+                                  example: 01-101
+                                  type: string
+                              type: object
+                            capacity:
+                              properties:
+                                before:
+                                  description: before
+                                  example: 20
+                                  type: integer
+                                after:
+                                  description: after
+                                  example: 30
+                                  type: integer
+                              type: object
+                            hasWindow:
+                              properties:
+                                before:
+                                  description: before
+                                  type: boolean
+                                after:
+                                  description: after
+                                  type: boolean
+                              type: object
+                            internalRooms:
+                              properties:
+                                before:
+                                  description: before
+                                  example: 2
+                                  type: integer
+                                after:
+                                  description: after
+                                  example: 1
+                                  type: integer
+                              type: object
+                            area:
+                              properties:
+                                before:
+                                  description: before
+                                  example: 788
+                                  type: integer
+                                after:
+                                  description: after
+                                  example: 654
+                                  type: integer
+                              type: object
+                            uuid:
+                              properties:
+                                before:
+                                  description: before
+                                  example: uuid-1
+                                  type: string
+                                after:
+                                  description: after
+                                  example: uuid-1
+                                  type: string
+                              type: object
+                          type: object
+                        type: array
+                    type: object
+                  msg:
+                    description: msg
+                    example: ''
+                    type: string
+  '/api/v1/mulan/resourceFile/{uuid}/upload':
+    post:
+      tags:
+        - mulan
+      description: |
+        upload resource file
+      operationId: upload resource file
+      parameters:
+        - name: uuid
+          in: path
+          description: resoure file uuid
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: 9d7441b0-200a-0134-22ec-76193f69ded5
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: code
+                    example: 0
+                    type: integer
+                  data:
+                    description: data
+                    type: boolean
+                  msg:
+                    description: msg
+                    example: ''
+                    type: string
+  /api/v1/mulan/products/credits:
+    get:
+      tags:
+        - mulan
+      description: |
+        list credit products
+      operationId: credit product list
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: code
+                    example: 0
+                    type: integer
+                  data:
+                    items:
+                      properties:
+                        productName:
+                          description: productName
+                          example: 积分包（会员）
+                          type: string
+                        productNameI18n:
+                          properties:
+                            zhCN:
+                              description: zhCN
+                              example: 积分包（会员）
+                              type: string
+                            enUS:
+                              description: enUS
+                              example: credit package(member)
+                              type: string
+                            zhTW:
+                              description: zhTW
+                              example: 积分包（会员)
+                              type: string
+                          type: object
+                        productUuid:
+                          description: productUuid
+                          example: 9d7441b0-200a-0134-22ec-76193f
+                          type: string
+                        priceCN:
+                          properties:
+                            amount:
+                              description: amount
+                              example: 250
+                              type: integer
+                            currency:
+                              properties:
+                                name:
+                                  description: name
+                                  example: CNY
+                                  type: string
+                                symbol:
+                                  description: symbol
+                                  example: ￥
+                                  type: string
+                              type: object
+                          type: object
+                        priceHK:
+                          properties:
+                            amount:
+                              description: amount
+                              example: 300
+                              type: integer
+                            currency:
+                              properties:
+                                name:
+                                  description: name
+                                  example: HKD
+                                  type: string
+                                symbol:
+                                  description: symbol
+                                  example: $
+                                  type: string
+                              type: object
+                          type: object
+                        priceTW:
+                          properties:
+                            amount:
+                              description: amount
+                              example: 800
+                              type: integer
+                            currency:
+                              properties:
+                                name:
+                                  description: name
+                                  example: TWD
+                                  type: string
+                                symbol:
+                                  description: symbol
+                                  example: $
+                                  type: string
+                              type: object
+                          type: object
+                        creditCount:
+                          description: creditCount
+                          example: 10
+                          type: integer
+                        status:
+                          description: status
+                          example: ON_SALE
+                          type: string
+                      type: object
+                    type: array
+                  msg:
+                    description: msg
+                    example: ''
+                    type: string
+  /api/v1/mulan/products/spaces:
+    get:
+      tags:
+        - mulan
+      description: |
+        space product list, filter by building uuid, and product type
+      operationId: space product list
+      parameters:
+        - name: buildingUuid
+          in: query
+          description: building uuid
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: 9d7441b0-200a-0134-22ec-76193f69ded5
+        - name: productTypes
+          in: query
+          description: filter by product types
+          schema:
+            type: array
+            items:
+              $ref: '#/paths/~1api~1v1~1rpc~1products/get/parameters/1/schema/items'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: code
+                    example: 0
+                    type: integer
+                  data:
+                    items:
+                      properties:
+                        productName:
+                          description: productName
+                          example: A-101
+                          type: string
+                        productType:
+                          description: productType
+                          example: HD
+                          type: string
+                        productUuid:
+                          description: productUuid
+                          example: p-uuid-1
+                          type: string
+                        physicalDeskCount:
+                          description: physicalDeskCount
+                          example: 20
+                          type: integer
+                        workUnits:
+                          description: workUnits
+                          example: 30
+                          type: integer
+                      type: object
+                    type: array
+                  msg:
+                    description: msg
+                    example: ''
+                    type: string
+  '/api/v1/mulan/products/{uuid}/workUnits':
+    post:
+      tags:
+        - mulan
+      description: |
+        modify specific product work units
+      operationId: modify product work units
+      parameters:
+        - name: uuid
+          in: path
+          description: product uuid
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: 9d7441b0-200a-0134-22ec-76193f69ded5
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                workUnits:
+                  type: integer
+                  example: 25
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref:
+                  "#/paths/~1api~1v1~1mulan~1resourceFile~1%7Buuid%7D~1upload/post/response\
+                  s/200/content/application~1json/schema"
+  '/api/v1/mulan/products/{uuid}/notes':
+    post:
+      tags:
+        - mulan
+      description: |
+        add notes to specific product
+      operationId: add product noteds
+      parameters:
+        - name: uuid
+          in: path
+          description: product uuid
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: 9d7441b0-200a-0134-22ec-76193f69ded5
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                notes:
+                  type: string
+                  example: 不要卖掉！
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref:
+                  "#/paths/~1api~1v1~1mulan~1resourceFile~1%7Buuid%7D~1upload/post/response\
+                  s/200/content/application~1json/schema"
+  /api/v1/mulan/products/services/admin:
+    post:
+      tags:
+        - mulan
+      description: |
+        add on service list with original price, filer by keyword, city/building
+      operationId: add on service list - admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                page:
+                  description: page
+                  example: 1
+                  type: integer
+                size:
+                  description: size
+                  example: 20
+                  type: integer
+                cityUuid:
+                  description: cityUuid
+                  example: city-uuid-1
+                  type: string
+                buildingUuid:
+                  description: buildingUuid
+                  example: test-building-uuid-001
+                  type: string
+                allCountry:
+                  description: allCountry
+                  type: boolean
+                keyword:
+                  description: keyword
+                  example: 门禁
+                  type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: code
+                    example: 0
+                    type: integer
+                  data:
+                    items:
+                      properties:
+                        productName:
+                          description: productName
+                          example: 会员换卡
+                          type: string
+                        productNameI18n:
+                          properties:
+                            zhCN:
+                              description: zhCN
+                              example: 会员换卡
+                              type: string
+                            enUS:
+                              description: enUS
+                              example: Access Control fee
+                              type: string
+                            zhTW:
+                              description: zhTW
+                              example: ''
+                              type: string
+                          type: object
+                        productUuid:
+                          description: productUuid
+                          example: product-uuid-
+                          type: string
+                        category:
+                          description: category
+                          example: 门禁记录报告
+                          type: string
+                        maintainedDepartment:
+                          description: maintainedDepartment
+                          example: Buildings Ops
+                          type: string
+                        priceCountry:
+                          properties:
+                            amount:
+                              description: amount
+                              example: 4563
+                              type: integer
+                            currency:
+                              properties:
+                                name:
+                                  description: name
+                                  example: CNY
+                                  type: string
+                                symbol:
+                                  description: symbol
+                                  example: ￥
+                                  type: string
+                              type: object
+                          type: object
+                        priceCity:
+                          properties:
+                            amount:
+                              description: amount
+                              example: 4563
+                              type: integer
+                            currency:
+                              properties:
+                                name:
+                                  description: name
+                                  example: CNY
+                                  type: string
+                                symbol:
+                                  description: symbol
+                                  example: ￥
+                                  type: string
+                              type: object
+                          type: object
+                        priceBuilding:
+                          properties:
+                            amount:
+                              description: amount
+                              example: 4550
+                              type: integer
+                            currency:
+                              properties:
+                                name:
+                                  description: name
+                                  example: CNY
+                                  type: string
+                                symbol:
+                                  description: symbol
+                                  example: ￥
+                                  type: string
+                              type: object
+                          type: object
+                        taxCN:
+                          properties:
+                            code:
+                              description: code
+                              example: TAX001
+                              type: string
+                            rate:
+                              description: rate
+                              example: 0.2
+                              type: integer
+                          type: object
+                        taxHK:
+                          properties:
+                            code:
+                              description: code
+                              example: TAX001
+                              type: string
+                            rate:
+                              description: rate
+                              example: 0.19
+                              type: integer
+                          type: object
+                        taxTW:
+                          properties:
+                            code:
+                              description: code
+                              example: TAX001
+                              type: string
+                            rate:
+                              description: rate
+                              example: 0.25
+                              type: integer
+                          type: object
+                        status:
+                          description: status
+                          example: ON_SALE
+                          type: string
+                      type: object
+                    type: array
+                  msg:
+                    description: msg
+                    example: ''
+                    type: string
+  /api/v1/mulan/products/services:
+    get:
+      tags:
+        - mulan
+      description: |
+        add on service list
+      operationId: add on service list - all
+      parameters:
+        - name: buildingUuid
+          in: query
+          description: building uuid
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: 9d7441b0-200a-0134-22ec-76193f69ded5
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: code
+                    example: 0
+                    type: integer
+                  data:
+                    items:
+                      properties:
+                        productName:
+                          description: productName
+                          example: 会员换卡
+                          type: string
+                        productUuid:
+                          description: productUuid
+                          example: product-uuid-001
+                          type: string
+                        category:
+                          description: category
+                          example: 门禁记录报告
+                          type: string
+                        price:
+                          properties:
+                            amount:
+                              description: amount
+                              example: 4563
+                              type: integer
+                            currency:
+                              properties:
+                                name:
+                                  description: name
+                                  example: CNY
+                                  type: string
+                                symbol:
+                                  description: symbol
+                                  example: ￥
+                                  type: string
+                              type: object
+                          type: object
+                        tax:
+                          properties:
+                            code:
+                              description: code
+                              example: TAX001
+                              type: string
+                            rate:
+                              description: rate
+                              example: 0.2
+                              type: integer
+                          type: object
+                      type: object
+                    type: array
+                  msg:
+                    description: msg
+                    example: ''
+                    type: string

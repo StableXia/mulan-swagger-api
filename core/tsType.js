@@ -1,9 +1,8 @@
-/* eslint-disable */
-
 const { ATOMIC_TYPE } = require('../helpers/constants');
-const { forEach } = require('../helpers/utils');
+const { forEach, isString } = require('../helpers/utils');
 
 const isStringType = (v) => v === 'string';
+const isEnumType = (v) => v === 'enum';
 const isNumberType = (v) => v === 'number' || v === 'integer';
 const isArrayType = (v) => v === 'array';
 const isObjectType = (v) => v === 'object';
@@ -11,10 +10,9 @@ const isBooleanType = (v) => v === 'boolean';
 const isRefType = (v) => v === 'ref';
 const isAtomicType = (v) => ATOMIC_TYPE.includes(v);
 
-function generateTsType(swaggerParameter, swaggerJson) {
+function generateTsType(swaggerParameter) {
   const tempType = {
     description: swaggerParameter.description,
-    isEnum: false,
   };
 
   if (swaggerParameter.schema) {
@@ -23,9 +21,21 @@ function generateTsType(swaggerParameter, swaggerJson) {
 
   if (swaggerParameter.$ref) {
     tempType.tsType = 'ref';
-    tempType.target = swaggerParameter.$ref.substring(
-      swaggerParameter.$ref.lastIndexOf('/') + 1,
-    );
+    const pathArr = swaggerParameter.$ref.split('/').slice(3);
+
+    if (pathArr.length > 0) {
+      const sTarget = pathArr.shift();
+      const eTarget = pathArr.pop();
+      tempType.target = eTarget ? `${sTarget}['${eTarget}']` : sTarget;
+    } else {
+      tempType.target = 'any';
+    }
+  } else if (isEnumType(swaggerParameter.type) || swaggerParameter.enum) {
+    tempType.tsType = swaggerParameter.enum
+      .map((str) => (isString(str) ? `'${str.split('-')[0]}'` : str))
+      .join(' | ');
+    tempType.isAtomic = true;
+    tempType.isEnum = true;
   } else if (isStringType(swaggerParameter.type)) {
     tempType.tsType = 'string';
   } else if (isNumberType(swaggerParameter.type)) {
@@ -38,31 +48,12 @@ function generateTsType(swaggerParameter, swaggerJson) {
   } else if (isObjectType(swaggerParameter.type)) {
     tempType.tsType = 'object';
     tempType.properties = [];
-    if (swaggerParameter.allOf) {
-      swaggerParameter.allOf.forEach((ref) => {
-        if (ref.$ref) {
-          const refSegments = ref.$ref.split('/');
-          const name = refSegments[refSegments.length - 1];
-          forEach(swaggerJson.definitions, (definition, definitionName) => {
-            if (definitionName === name) {
-              const property = generateTsType(definition, swaggerJson);
-              tempType.properties.push(property.properties);
-            }
-          });
-        } else {
-          const property = generateTsType(ref);
-          tempType.properties.push(property.properties);
-        }
-      });
-    }
 
     forEach(swaggerParameter.properties, (propertyType, propertyName) => {
       const property = generateTsType(propertyType);
 
       property.name = propertyName;
-      property.optional =
-        !swaggerParameter.required ||
-        !swaggerParameter.required.includes(propertyName);
+      property.isRequired = swaggerParameter.required;
 
       tempType.properties.push(property);
     });

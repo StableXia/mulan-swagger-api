@@ -1,0 +1,2202 @@
+openapi: 3.0.1
+info:
+  title: BIS openAPI 接口描述文档
+  version: '0.1'
+servers:
+  - url: https://api-staging.wework.cn/chinaos/buildingInfoService
+    description: Staging Server
+    variables: {}
+  - url: http://localhost:31080/buildingInfoService
+    description: Local
+    variables: {}
+paths:
+  /api/v1/mulan/buildings:
+    get:
+      tags:
+        - v1/mulan - building & floor
+      description: 获取楼宇列表，取各可选筛选条件的交集作为结果
+      operationId: listBuildingWithCondition
+      parameters:
+        - name: regionUuid
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: cityUuid
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: districtUuid
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: keyword
+          in: query
+          description: 关键词 （building code 或 楼宇名称）
+          required: false
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 1
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 2147483647
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponsePageableBuildingVO'
+  '/api/v1/mulan/buildings/{buildingUuid}':
+    get:
+      tags:
+        - v1/mulan - building & floor
+      description: 获取某栋楼的基础信息
+      operationId: getBuildingByUuid
+      parameters:
+        - name: buildingUuid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseBuildingVO'
+    put:
+      tags:
+        - v1/mulan - building & floor
+      description: 修改楼宇基础信息
+      operationId: updateBuildingInfo
+      parameters:
+        - name: buildingUuid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BuildingRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseBuildingVO'
+  '/api/v1/mulan/cities/{cityUuid}/buildings':
+    post:
+      tags:
+        - v1/mulan - building & floor
+      description: 在城市内新增楼宇
+      operationId: addBuildingForCity
+      parameters:
+        - name: cityUuid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BuildingRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseBuildingVO'
+      deprecated: true
+  /api/v1/mulan/cities:
+    get:
+      tags:
+        - v1/mulan - region & city & district
+      description: 获取全部城市列表
+      operationId: listCity
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseListCityVO'
+    put:
+      tags:
+        - v1/mulan - region & city & district
+      description: 修改城市名称，对行政区列表 增/删/改
+      operationId: updateCity
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CityRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseCityVO'
+    post:
+      tags:
+        - v1/mulan - region & city & district
+      description: 新增城市
+      operationId: addCity
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseCityVO'
+      deprecated: true
+  '/api/v1/mulan/regions/{regionUuid}/cities':
+    get:
+      tags:
+        - v1/mulan - region & city & district
+      description: 获取指定区域内的城市列表
+      operationId: listCityByRegionUuid
+      parameters:
+        - name: regionUuid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseListCityVO'
+  '/api/v1/mulan/cities/{cityUuid}':
+    get:
+      tags:
+        - v1/mulan - region & city & district
+      description: 获取指定city属性
+      operationId: getCity
+      parameters:
+        - name: cityUuid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseCityVO'
+  '/api/v1/mulan/cities/{cityUuid}/commercials':
+    get:
+      tags:
+        - v1/mulan - commercial & line & station
+      description: 列出城市中的商圈列表
+      operationId: listCommercialOfCity
+      parameters:
+        - name: cityUuid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseListCommercialVO'
+    post:
+      tags:
+        - v1/mulan - commercial & line & station
+      description: 为城市新增商圈
+      operationId: addCommercialForCity
+      parameters:
+        - name: cityUuid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommercialRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseCommercialVO'
+  '/api/v1/mulan/commercials/{commercialUuid}':
+    delete:
+      tags:
+        - v1/mulan - commercial & line & station
+      description: 为城市删除商圈
+      operationId: deleteCommercialForCity
+      parameters:
+        - name: commercialUuid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseString'
+  '/api/v1/mulan/buildings/{buildingUuid}/facilities':
+    get:
+      tags:
+        - v1/mulan - team & rule & facility & feature & transportation & picture
+      description: 获取社区设施信息
+      operationId: getCommunityFacility
+      parameters:
+        - name: buildingUuid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseFacilityVO'
+    put:
+      tags:
+        - v1/mulan - team & rule & facility & feature & transportation & picture
+      description: 修改社区设施信息
+      operationId: updateCommunityFacility
+      parameters:
+        - name: buildingUuid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FacilityRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseFacilityVO'
+  '/api/v1/mulan/buildings/{buildingUuid}/pictures':
+    get:
+      tags:
+        - v1/mulan - team & rule & facility & feature & transportation & picture
+      description: 获得社区头图与宣传图
+      operationId: getCommunityPictureInfo
+      parameters:
+        - name: buildingUuid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponsePictureInfoInfoVO'
+    put:
+      tags:
+        - v1/mulan - team & rule & facility & feature & transportation & picture
+      description: 修改社区头图与宣传图
+      operationId: updateCommunityPictureInfo
+      parameters:
+        - name: buildingUuid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommunityPictureInfoRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseBoolean'
+  '/api/v1/mulan/buildings/{buildingUuid}/rules':
+    get:
+      tags:
+        - v1/mulan - team & rule & facility & feature & transportation & picture
+      description: 获取社区规则指南
+      operationId: getCommunityRule
+      parameters:
+        - name: buildingUuid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseRuleVO'
+    put:
+      tags:
+        - v1/mulan - team & rule & facility & feature & transportation & picture
+      description: 修改社区规则指南
+      operationId: updateCommunityRule
+      parameters:
+        - name: buildingUuid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RuleRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseRuleVO'
+  '/api/v1/mulan/buildings/{buildingUuid}/spaceFeature':
+    get:
+      tags:
+        - v1/mulan - team & rule & facility & feature & transportation & picture
+      operationId: getCommunitySpaceFeatureInfo
+      parameters:
+        - name: buildingUuid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseSpaceFeatureVO'
+    put:
+      tags:
+        - v1/mulan - team & rule & facility & feature & transportation & picture
+      description: 修改社区空间特色信息
+      operationId: updateCommunitySpaceFeature
+      parameters:
+        - name: buildingUuid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpaceFeatureRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseBoolean'
+  '/api/v1/mulan/buildings/{buildingUuid}/teams':
+    get:
+      tags:
+        - v1/mulan - team & rule & facility & feature & transportation & picture
+      description: 获取社区团队信息
+      operationId: getCommunityTeamInfo
+      parameters:
+        - name: buildingUuid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseTeamVO'
+    put:
+      tags:
+        - v1/mulan - team & rule & facility & feature & transportation & picture
+      description: 修改社区团队信息
+      operationId: updateCommunityTeamInfo
+      parameters:
+        - name: buildingUuid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseTeamVO'
+  '/api/v1/mulan/buildings/{buildingUuid}/timeinfo':
+    get:
+      tags:
+        - v1/mulan - team & rule & facility & feature & transportation & picture
+      description: 获取社区时间信息
+      operationId: getCommunityTimeInfo
+      parameters:
+        - name: buildingUuid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseTimeInfoVO'
+    put:
+      tags:
+        - v1/mulan - team & rule & facility & feature & transportation & picture
+      description: 修改社区时间信息
+      operationId: updateCommunityTimeInfo
+      parameters:
+        - name: buildingUuid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TimeInfoRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseTimeInfoVO'
+  '/api/v1/mulan/buildings/{buildingUuid}/transportation':
+    get:
+      tags:
+        - v1/mulan - team & rule & facility & feature & transportation & picture
+      description: 获得楼宇相关的交通信息
+      operationId: getCommunityTransportationInfo
+      parameters:
+        - name: buildingUuid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseTransportationVO'
+    put:
+      tags:
+        - v1/mulan - team & rule & facility & feature & transportation & picture
+      description: 修改楼宇交通信息
+      operationId: updateCommunityTransportationInfo
+      parameters:
+        - name: buildingUuid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransportationRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseBoolean'
+  /api/v1/mulan/buildingSelector:
+    get:
+      tags:
+        - v1/mulan - complex
+      description: 获取城市/楼宇/楼层 层级选择框数据
+      operationId: getBuildingSelectorData
+      parameters:
+        - name: filterClosedCity
+          in: query
+          description: 是否过滤已关闭的城市
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: filterClosedBuilding
+          in: query
+          description: 是否过滤已关闭的楼宇
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: filterClosedFloor
+          in: query
+          description: 是否过滤已关闭的楼层
+          required: false
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseListCityBuildingFloorComboVO'
+  '/api/v1/mulan/cities/{cityUuid}/districts':
+    get:
+      tags:
+        - v1/mulan - region & city & district
+      description: 城市的district列表
+      operationId: listDistrict
+      parameters:
+        - name: cityUuid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseListDistrictVO'
+  '/api/v1/mulan/buildings/{buildingUuid}/floors':
+    get:
+      tags:
+        - v1/mulan - building & floor
+      description: 获取楼宇所有楼层
+      operationId: listFloorByBuilding
+      parameters:
+        - name: buildingUuid
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 1
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 2147483647
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponsePageableFloorVO'
+    put:
+      tags:
+        - v1/mulan - building & floor
+      description: 修改楼层信息
+      operationId: updateFloorForBuilding
+      parameters:
+        - name: buildingUuid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FloorRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseFloorVO'
+    post:
+      tags:
+        - v1/mulan - building & floor
+      description: 添加楼层
+      operationId: addFloorForBuilding
+      parameters:
+        - name: buildingUuid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FloorRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseFloorVO'
+  '/api/v1/mulan/floors/{uuid}':
+    get:
+      tags:
+        - v1/mulan - building & floor
+      description: 根据uuid获取楼层数据
+      operationId: getFloorByUuid
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseFloorVO'
+  '/api/v1/mulan/buildings/{buildingUuid}/floors/{floorUuid}':
+    delete:
+      tags:
+        - v1/mulan - building & floor
+      description: 删除楼层
+      operationId: deleteFloorForBuilding
+      parameters:
+        - name: buildingUuid
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: floorUuid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseString'
+      deprecated: true
+  /api/v1/mulan/regions:
+    get:
+      tags:
+        - v1/mulan - region & city & district
+      description: 获取可用的地域列表 （大陆/港/澳/台
+      operationId: listRegion
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseListRegionVO'
+  /api/v1/mulan/tags:
+    get:
+      tags:
+        - v1/mulan - tag
+      description: 获取指定类型tag列表
+      operationId: listTagByType
+      parameters:
+        - name: type
+          in: query
+          required: true
+          schema:
+            type: string
+            enum:
+              - FEATURE
+              - INFRASTRUCTURE
+              - CHARACTERISTIC_SPACE
+              - COMMERCIAL
+              - METRO
+              - BUS
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseListTagVO'
+    post:
+      tags:
+        - v1/mulan - tag
+      description: 新增tag
+      operationId: addTag
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TagRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseTagVO'
+  '/api/v1/mulan/tags/{tagUuid}':
+    delete:
+      tags:
+        - v1/mulan - tag
+      description: 删除tag
+      operationId: deleteTagByUuid
+      parameters:
+        - name: tagUuid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseString'
+  '/api/v1/mulan/cities/{cityUuid}/lines':
+    get:
+      tags:
+        - v1/mulan - commercial & line & station
+      description: 获取城市内的（bus/metro）线路列表
+      operationId: listLineOfCity
+      parameters:
+        - name: cityUuid
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: type
+          in: query
+          required: true
+          schema:
+            type: string
+            enum:
+              - MOTRO
+              - BUS
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseListLineVO'
+    post:
+      tags:
+        - v1/mulan - commercial & line & station
+      description: 新增城市内的（bus/metro）线路
+      operationId: createLineForCity
+      parameters:
+        - name: cityUuid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LineRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseLineVO'
+  '/api/v1/mulan/lines/{lineUuid}':
+    delete:
+      tags:
+        - v1/mulan - commercial & line & station
+      description: 删除城市内的（bus/metro）线路
+      operationId: deleteLineOfCity
+      parameters:
+        - name: lineUuid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseString'
+  '/api/v1/mulan/lines/{lineUuid}/stations':
+    get:
+      tags:
+        - v1/mulan - commercial & line & station
+      description: 列出某线路 (bus/metro) 的所有站点
+      operationId: listStationOfLine
+      parameters:
+        - name: lineUuid
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: type
+          in: query
+          required: true
+          schema:
+            type: string
+            enum:
+              - MOTRO
+              - BUS
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseListStationVO'
+    post:
+      tags:
+        - v1/mulan - commercial & line & station
+      description: 为某线路 (bus/metro) 的新增站点
+      operationId: createStationForLine
+      parameters:
+        - name: lineUuid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StationRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseStationVO'
+  '/api/v1/mulan/stations/{stationUuid}':
+    delete:
+      tags:
+        - v1/mulan - commercial & line & station
+      description: 删除某线路 (bus/metro) 的某站点
+      operationId: deleteStationOfLine
+      parameters:
+        - name: stationUuid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseString'
+components:
+  schemas:
+    BuildingVO:
+      required:
+        - addressI18n
+        - cityUuid
+        - districtUuid
+        - nameI18n
+        - newBuildingCode
+        - vrTourUrl
+        - zipCode
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: 楼宇uuid，新增城市可为空，其他情况必填
+        cityUuid:
+          type: string
+        cityNameI18n:
+          $ref: '#/components/schemas/I18nItem'
+        districtUuid:
+          type: string
+        districtNameI18n:
+          $ref: '#/components/schemas/I18nItem'
+        buildingCode:
+          type: string
+        newBuildingCode:
+          type: string
+        nameI18n:
+          $ref: '#/components/schemas/I18nItem'
+        addressI18n:
+          $ref: '#/components/schemas/I18nItem'
+        zipCode:
+          type: string
+        vrTourUrl:
+          type: string
+        openAt:
+          type: string
+          description: RFC 3339标准的时间字符串
+        status:
+          type: string
+          description: 根据楼层状态自动判断
+          enum:
+            - UNOPEN
+            - OPENING
+            - CLOSED
+        lat:
+          type: string
+        lon:
+          type: string
+        imageList:
+          type: array
+          items:
+            $ref: '#/components/schemas/ImageVO'
+    I18nItem:
+      required:
+        - enUS
+        - zhCN
+        - zhTW
+      type: object
+      properties:
+        zhCN:
+          type: string
+        enUS:
+          type: string
+        zhTW:
+          type: string
+    ImageVO:
+      required:
+        - url
+      type: object
+      properties:
+        uuid:
+          type: string
+        altTxt:
+          type: string
+        caption:
+          type: string
+        url:
+          type: string
+    PageableBuildingVO:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        page:
+          type: integer
+          format: int32
+        list:
+          type: array
+          items:
+            $ref: '#/components/schemas/BuildingVO'
+    ResponsePageableBuildingVO:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        data:
+          $ref: '#/components/schemas/PageableBuildingVO'
+        msg:
+          type: string
+    ResponseBuildingVO:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        data:
+          $ref: '#/components/schemas/BuildingVO'
+        msg:
+          type: string
+    BuildingRequest:
+      required:
+        - addressI18n
+        - cityUuid
+        - districtUuid
+        - nameI18n
+        - newBuildingCode
+        - vrTourUrl
+        - zipCode
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: 楼宇uuid，新增城市可为空，其他情况必填
+        cityUuid:
+          type: string
+        cityNameI18n:
+          $ref: '#/components/schemas/I18nItem'
+        districtUuid:
+          type: string
+        districtNameI18n:
+          $ref: '#/components/schemas/I18nItem'
+        buildingCode:
+          type: string
+        newBuildingCode:
+          type: string
+        nameI18n:
+          $ref: '#/components/schemas/I18nItem'
+        addressI18n:
+          $ref: '#/components/schemas/I18nItem'
+        zipCode:
+          type: string
+        vrTourUrl:
+          type: string
+    CityVO:
+      required:
+        - districtCount
+        - image
+        - openingBuildingCount
+        - regionUuid
+        - status
+        - totalBuildingCount
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: city uuid
+        nameI18n:
+          $ref: '#/components/schemas/I18nItem'
+        districtList:
+          type: array
+          description: 全量的城市行政区列表
+          items:
+            $ref: '#/components/schemas/DistrictRequest'
+        status:
+          type: string
+          description: 城市状态
+          enum:
+            - UNOPEN
+            - OPENING
+            - CLOSED
+        openAt:
+          type: string
+          description: RFC 3339标准的时间字符串
+        regionUuid:
+          type: string
+          description: 城市所属区域
+        totalBuildingCount:
+          type: integer
+          description: 总楼宇数
+          format: int32
+        openingBuildingCount:
+          type: integer
+          description: 运营中楼宇数量
+          format: int32
+        currencyType:
+          type: string
+          description: 通用货币
+          enum:
+            - CNY
+            - USD
+            - TWD
+            - HKD
+        image:
+          $ref: '#/components/schemas/ImageVO'
+        districtCount:
+          type: integer
+          description: 行政区数
+          format: int32
+    DistrictRequest:
+      required:
+        - cityUuid
+        - nameI18n
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: 行政区的原uuid,新增时可为空
+        cityUuid:
+          type: string
+        nameI18n:
+          $ref: '#/components/schemas/I18nItem'
+      description: 全量的城市行政区列表
+    ResponseListCityVO:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CityVO'
+        msg:
+          type: string
+    ResponseCityVO:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        data:
+          $ref: '#/components/schemas/CityVO'
+        msg:
+          type: string
+    CityRequest:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: city uuid
+        nameI18n:
+          $ref: '#/components/schemas/I18nItem'
+        districtList:
+          type: array
+          description: 全量的城市行政区列表
+          items:
+            $ref: '#/components/schemas/DistrictRequest'
+    CommercialVO:
+      required:
+        - cityUuid
+        - nameI18n
+      type: object
+      properties:
+        nameI18n:
+          $ref: '#/components/schemas/I18nItem'
+        cityUuid:
+          type: string
+          description: 商圈归属的cityUuid，必填
+        uuid:
+          type: string
+    ResponseListCommercialVO:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CommercialVO'
+        msg:
+          type: string
+    CommercialRequest:
+      required:
+        - cityUuid
+        - nameI18n
+      type: object
+      properties:
+        nameI18n:
+          $ref: '#/components/schemas/I18nItem'
+        cityUuid:
+          type: string
+          description: 商圈归属的cityUuid，必填
+    ResponseCommercialVO:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        data:
+          $ref: '#/components/schemas/CommercialVO'
+        msg:
+          type: string
+    ResponseString:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        data:
+          type: string
+        msg:
+          type: string
+    FacilityVO:
+      required:
+        - cigarette
+        - dietBar
+        - drinksAndWine
+        - garbageClassification
+        - itService
+        - network
+        - pet
+        - printer
+        - takeOut
+        - wifi
+      type: object
+      properties:
+        buildingUuid:
+          type: string
+        network:
+          $ref: '#/components/schemas/I18nItem'
+        itService:
+          $ref: '#/components/schemas/I18nItem'
+        drinksAndWine:
+          $ref: '#/components/schemas/I18nItem'
+        cigarette:
+          $ref: '#/components/schemas/I18nItem'
+        takeOut:
+          $ref: '#/components/schemas/I18nItem'
+        wifi:
+          $ref: '#/components/schemas/I18nItem'
+        printer:
+          $ref: '#/components/schemas/I18nItem'
+        dietBar:
+          $ref: '#/components/schemas/I18nItem'
+        garbageClassification:
+          $ref: '#/components/schemas/I18nItem'
+        pet:
+          $ref: '#/components/schemas/I18nItem'
+    ResponseFacilityVO:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        data:
+          $ref: '#/components/schemas/FacilityVO'
+        msg:
+          type: string
+    FacilityRequest:
+      required:
+        - cigarette
+        - dietBar
+        - drinksAndWine
+        - garbageClassification
+        - itService
+        - network
+        - pet
+        - printer
+        - takeOut
+        - wifi
+      type: object
+      properties:
+        buildingUuid:
+          type: string
+        network:
+          $ref: '#/components/schemas/I18nItem'
+        itService:
+          $ref: '#/components/schemas/I18nItem'
+        drinksAndWine:
+          $ref: '#/components/schemas/I18nItem'
+        cigarette:
+          $ref: '#/components/schemas/I18nItem'
+        takeOut:
+          $ref: '#/components/schemas/I18nItem'
+        wifi:
+          $ref: '#/components/schemas/I18nItem'
+        printer:
+          $ref: '#/components/schemas/I18nItem'
+        dietBar:
+          $ref: '#/components/schemas/I18nItem'
+        garbageClassification:
+          $ref: '#/components/schemas/I18nItem'
+        pet:
+          $ref: '#/components/schemas/I18nItem'
+    PictureInfoInfoVO:
+      required:
+        - buildingBroadcastPictures
+        - buildingMainPicture
+      type: object
+      properties:
+        buildingMainPicture:
+          $ref: '#/components/schemas/ImageVO'
+        buildingBroadcastPictures:
+          type: array
+          description: 楼宇宣传图
+          items:
+            $ref: '#/components/schemas/ImageVO'
+    ResponsePictureInfoInfoVO:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        data:
+          $ref: '#/components/schemas/PictureInfoInfoVO'
+        msg:
+          type: string
+    CommunityPictureInfoRequest:
+      required:
+        - buildingBroadcastPictures
+        - buildingMainPicture
+      type: object
+      properties:
+        buildingMainPicture:
+          $ref: '#/components/schemas/ImageVO'
+        buildingBroadcastPictures:
+          type: array
+          description: 楼宇宣传图
+          items:
+            $ref: '#/components/schemas/ImageVO'
+    ResponseBoolean:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        data:
+          type: boolean
+        msg:
+          type: string
+    ResponseRuleVO:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        data:
+          $ref: '#/components/schemas/RuleVO'
+        msg:
+          type: string
+    RuleVO:
+      required:
+        - accessRule
+        - communityPropose
+        - guestNotice
+        - guestRegisterRule
+        - membershipFeeRule
+        - mimoRule
+        - overdueFineRule
+      type: object
+      properties:
+        buildingUuid:
+          type: string
+        guestRegisterRule:
+          $ref: '#/components/schemas/I18nItem'
+        guestNotice:
+          $ref: '#/components/schemas/I18nItem'
+        mimoRule:
+          $ref: '#/components/schemas/I18nItem'
+        overdueFineRule:
+          $ref: '#/components/schemas/I18nItem'
+        membershipFeeRule:
+          $ref: '#/components/schemas/I18nItem'
+        accessRule:
+          $ref: '#/components/schemas/I18nItem'
+        communityPropose:
+          $ref: '#/components/schemas/I18nItem'
+    RuleRequest:
+      required:
+        - accessRule
+        - communityPropose
+        - guestNotice
+        - guestRegisterRule
+        - membershipFeeRule
+        - mimoRule
+        - overdueFineRule
+      type: object
+      properties:
+        buildingUuid:
+          type: string
+        guestRegisterRule:
+          $ref: '#/components/schemas/I18nItem'
+        guestNotice:
+          $ref: '#/components/schemas/I18nItem'
+        mimoRule:
+          $ref: '#/components/schemas/I18nItem'
+        overdueFineRule:
+          $ref: '#/components/schemas/I18nItem'
+        membershipFeeRule:
+          $ref: '#/components/schemas/I18nItem'
+        accessRule:
+          $ref: '#/components/schemas/I18nItem'
+        communityPropose:
+          $ref: '#/components/schemas/I18nItem'
+    ResponseSpaceFeatureVO:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        data:
+          $ref: '#/components/schemas/SpaceFeatureVO'
+        msg:
+          type: string
+    SpaceFeatureVO:
+      required:
+        - characteristicSpaceTags
+        - descI18n
+        - featureTags
+        - infrastructureTags
+        - nearbyFeatureI18n
+      type: object
+      properties:
+        buildingUuid:
+          type: string
+        featureTags:
+          type: array
+          description: 特色标签
+          items:
+            $ref: '#/components/schemas/TagRequest'
+        descI18n:
+          $ref: '#/components/schemas/I18nItem'
+        nearbyFeatureI18n:
+          $ref: '#/components/schemas/I18nItem'
+        infrastructureTags:
+          type: array
+          description: 基础设施标签
+          items:
+            $ref: '#/components/schemas/TagRequest'
+        characteristicSpaceTags:
+          type: array
+          description: 特色空间标签
+          items:
+            $ref: '#/components/schemas/TagRequest'
+    TagRequest:
+      type: object
+      properties:
+        uuid:
+          type: string
+        type:
+          type: string
+          enum:
+            - FEATURE
+            - INFRASTRUCTURE
+            - CHARACTERISTIC_SPACE
+            - COMMERCIAL
+            - METRO
+            - BUS
+        nameI18n:
+          $ref: '#/components/schemas/I18nItem'
+      description: 特色空间标签
+    SpaceFeatureRequest:
+      required:
+        - characteristicSpaceTags
+        - descI18n
+        - featureTags
+        - infrastructureTags
+        - nearbyFeatureI18n
+      type: object
+      properties:
+        buildingUuid:
+          type: string
+        featureTags:
+          type: array
+          description: 特色标签
+          items:
+            $ref: '#/components/schemas/TagRequest'
+        descI18n:
+          $ref: '#/components/schemas/I18nItem'
+        nearbyFeatureI18n:
+          $ref: '#/components/schemas/I18nItem'
+        infrastructureTags:
+          type: array
+          description: 基础设施标签
+          items:
+            $ref: '#/components/schemas/TagRequest'
+        characteristicSpaceTags:
+          type: array
+          description: 特色空间标签
+          items:
+            $ref: '#/components/schemas/TagRequest'
+    MachineNumber:
+      required:
+        - areaCode
+        - number
+      type: object
+      properties:
+        areaCode:
+          type: string
+          description: 区号
+        number:
+          type: string
+          description: 座机号码
+      description: 安保热线
+    ResponseTeamVO:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        data:
+          $ref: '#/components/schemas/TeamVO'
+        msg:
+          type: string
+    TeamVO:
+      required:
+        - cmNameI18n
+        - cmPhoto
+        - communityEmail
+        - communityMachineNumber
+        - fmContactNameI18n
+        - mainBarLocationI18n
+        - memberExperienceEmail
+        - salesManNameI18n
+        - securityMachineNumber
+      type: object
+      properties:
+        buildingUuid:
+          type: string
+        cmNameI18n:
+          $ref: '#/components/schemas/I18nItem'
+        communityEmail:
+          type: string
+          description: 社区邮箱
+        cmPhoto:
+          $ref: '#/components/schemas/ImageVO'
+        communityMachineNumber:
+          $ref: '#/components/schemas/MachineNumber'
+        memberExperienceEmail:
+          type: string
+          description: 会员体验邮箱
+        mainBarLocationI18n:
+          $ref: '#/components/schemas/I18nItem'
+        salesManNameI18n:
+          $ref: '#/components/schemas/I18nItem'
+        fmContactNameI18n:
+          $ref: '#/components/schemas/I18nItem'
+        securityMachineNumber:
+          $ref: '#/components/schemas/MachineNumber'
+    TeamRequest:
+      required:
+        - cmNameI18n
+        - cmPhoto
+        - communityEmail
+        - communityMachineNumber
+        - fmContactNameI18n
+        - mainBarLocationI18n
+        - memberExperienceEmail
+        - salesManNameI18n
+        - securityMachineNumber
+      type: object
+      properties:
+        buildingUuid:
+          type: string
+        cmNameI18n:
+          $ref: '#/components/schemas/I18nItem'
+        communityEmail:
+          type: string
+          description: 社区邮箱
+        cmPhoto:
+          $ref: '#/components/schemas/ImageVO'
+        communityMachineNumber:
+          $ref: '#/components/schemas/MachineNumber'
+        memberExperienceEmail:
+          type: string
+          description: 会员体验邮箱
+        mainBarLocationI18n:
+          $ref: '#/components/schemas/I18nItem'
+        salesManNameI18n:
+          $ref: '#/components/schemas/I18nItem'
+        fmContactNameI18n:
+          $ref: '#/components/schemas/I18nItem'
+        securityMachineNumber:
+          $ref: '#/components/schemas/MachineNumber'
+    ResponseTimeInfoVO:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        data:
+          $ref: '#/components/schemas/TimeInfoVO'
+        msg:
+          type: string
+    TimeInfoVO:
+      required:
+        - airConditionerTime
+        - buildingOpeningTime
+        - communityWorkingTime
+        - expressDeliveryTime
+      type: object
+      properties:
+        buildingUuid:
+          type: string
+        communityWorkingTime:
+          $ref: '#/components/schemas/I18nItem'
+        airConditionerTime:
+          $ref: '#/components/schemas/I18nItem'
+        buildingOpeningTime:
+          $ref: '#/components/schemas/I18nItem'
+        expressDeliveryTime:
+          $ref: '#/components/schemas/I18nItem'
+    TimeInfoRequest:
+      required:
+        - airConditionerTime
+        - buildingOpeningTime
+        - communityWorkingTime
+        - expressDeliveryTime
+      type: object
+      properties:
+        buildingUuid:
+          type: string
+        communityWorkingTime:
+          $ref: '#/components/schemas/I18nItem'
+        airConditionerTime:
+          $ref: '#/components/schemas/I18nItem'
+        buildingOpeningTime:
+          $ref: '#/components/schemas/I18nItem'
+        expressDeliveryTime:
+          $ref: '#/components/schemas/I18nItem'
+    ParkingLotRequest:
+      type: object
+      properties:
+        uuid:
+          type: string
+        buildingUuid:
+          type: string
+        nameI18n:
+          $ref: '#/components/schemas/I18nItem'
+        descI18n:
+          $ref: '#/components/schemas/I18nItem'
+        type:
+          type: string
+          enum:
+            - BUILDING_INSIDE
+            - BUILDING_OUTSIDE
+      description: 附近停车场
+    ResponseTransportationVO:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        data:
+          $ref: '#/components/schemas/TransportationVO'
+        msg:
+          type: string
+    TransportationVO:
+      type: object
+      properties:
+        buildingUuid:
+          type: string
+        commercialTagList:
+          type: array
+          description: 商圈标签列表
+          items:
+            $ref: '#/components/schemas/TagRequest'
+        metroTagList:
+          type: array
+          description: 地铁线路标签列表
+          items:
+            $ref: '#/components/schemas/TagRequest'
+        buildingInsideParkingList:
+          type: array
+          description: 楼内停车场
+          items:
+            $ref: '#/components/schemas/ParkingLotRequest'
+        buildingOutsideParkingList:
+          type: array
+          description: 附近停车场
+          items:
+            $ref: '#/components/schemas/ParkingLotRequest'
+    TransportationRequest:
+      type: object
+      properties:
+        buildingUuid:
+          type: string
+        commercialTagList:
+          type: array
+          description: 商圈标签列表
+          items:
+            $ref: '#/components/schemas/TagRequest'
+        metroTagList:
+          type: array
+          description: 地铁线路标签列表
+          items:
+            $ref: '#/components/schemas/TagRequest'
+        buildingInsideParkingList:
+          type: array
+          description: 楼内停车场
+          items:
+            $ref: '#/components/schemas/ParkingLotRequest'
+        buildingOutsideParkingList:
+          type: array
+          description: 附近停车场
+          items:
+            $ref: '#/components/schemas/ParkingLotRequest'
+    BuildingCoreVO:
+      type: object
+      properties:
+        buildingUuid:
+          type: string
+        buildingNameI18n:
+          $ref: '#/components/schemas/I18nItem'
+        floorList:
+          type: array
+          items:
+            $ref: '#/components/schemas/FloorCoreVO'
+    CityBuildingFloorComboVO:
+      type: object
+      properties:
+        cityUuid:
+          type: string
+        cityNameI18n:
+          $ref: '#/components/schemas/I18nItem'
+        buildingList:
+          type: array
+          items:
+            $ref: '#/components/schemas/BuildingCoreVO'
+    FloorCoreVO:
+      type: object
+      properties:
+        floorUuid:
+          type: string
+        floorNameI18n:
+          $ref: '#/components/schemas/I18nItem'
+        floorLevel:
+          type: integer
+          format: int32
+    ResponseListCityBuildingFloorComboVO:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CityBuildingFloorComboVO'
+        msg:
+          type: string
+    DistrictVO:
+      required:
+        - cityUuid
+        - nameI18n
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: 行政区的原uuid,新增时可为空
+        cityUuid:
+          type: string
+        nameI18n:
+          $ref: '#/components/schemas/I18nItem'
+    ResponseListDistrictVO:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DistrictVO'
+        msg:
+          type: string
+    FloorVO:
+      required:
+        - buildingUuid
+        - checkInTime
+        - checkOutTime
+        - floorMapUrl
+        - level
+        - openAt
+        - rsf
+        - totalBars
+        - usf
+      type: object
+      properties:
+        uuid:
+          type: string
+        buildingUuid:
+          type: string
+        level:
+          type: integer
+          description: 电梯楼层
+          format: int32
+        restricted:
+          type: boolean
+        openAt:
+          type: string
+          description: RFC 3339标准的时间字符串
+        closeAt:
+          type: string
+          description: RFC 3339标准的时间字符串
+        checkInTime:
+          type: string
+          description: RFC 3339标准的时间字符串
+        checkOutTime:
+          type: string
+          description: RFC 3339标准的时间字符串
+        floorMapUrl:
+          type: string
+          description: 楼层户型图url
+        type:
+          type: array
+          description: 楼层产品类型
+          items:
+            type: string
+            description: 楼层产品类型
+            enum:
+              - WE_WORK
+              - NON_WEWORK
+        totalWorkingUnits:
+          type: integer
+          description: 工位数量（预留，暂时不启用）
+          format: int32
+        totalBars:
+          minimum: 0
+          type: integer
+          description: 餐吧数量
+          format: int32
+        totalConferenceRooms:
+          type: integer
+          description: 会议室数量（预留，暂时不启用）
+          format: int32
+        totalWashRooms:
+          type: integer
+          description: 洗手间数量（预留，暂时不启用）
+          format: int32
+        usf:
+          minimum: 0
+          type: number
+          format: float
+        rsf:
+          minimum: 0
+          type: number
+          format: float
+        image:
+          $ref: '#/components/schemas/ImageVO'
+        status:
+          type: string
+          description: 楼层状态，根据开业时间和关闭时间计算得出
+          enum:
+            - UNOPEN
+            - OPENING
+            - CLOSED
+    PageableFloorVO:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        page:
+          type: integer
+          format: int32
+        list:
+          type: array
+          items:
+            $ref: '#/components/schemas/FloorVO'
+    ResponsePageableFloorVO:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        data:
+          $ref: '#/components/schemas/PageableFloorVO'
+        msg:
+          type: string
+    ResponseFloorVO:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        data:
+          $ref: '#/components/schemas/FloorVO'
+        msg:
+          type: string
+    FloorRequest:
+      required:
+        - buildingUuid
+        - checkInTime
+        - checkOutTime
+        - floorMapUrl
+        - level
+        - openAt
+        - rsf
+        - totalBars
+        - usf
+      type: object
+      properties:
+        uuid:
+          type: string
+        buildingUuid:
+          type: string
+        level:
+          type: integer
+          description: 电梯楼层
+          format: int32
+        restricted:
+          type: boolean
+        openAt:
+          type: string
+          description: RFC 3339标准的时间字符串
+        closeAt:
+          type: string
+          description: RFC 3339标准的时间字符串
+        checkInTime:
+          type: string
+          description: RFC 3339标准的时间字符串
+        checkOutTime:
+          type: string
+          description: RFC 3339标准的时间字符串
+        floorMapUrl:
+          type: string
+          description: 楼层户型图url
+        type:
+          type: array
+          description: 楼层产品类型
+          items:
+            type: string
+            description: 楼层产品类型
+            enum:
+              - WE_WORK
+              - NON_WEWORK
+        totalWorkingUnits:
+          type: integer
+          description: 工位数量（预留，暂时不启用）
+          format: int32
+        totalBars:
+          minimum: 0
+          type: integer
+          description: 餐吧数量
+          format: int32
+        totalConferenceRooms:
+          type: integer
+          description: 会议室数量（预留，暂时不启用）
+          format: int32
+        totalWashRooms:
+          type: integer
+          description: 洗手间数量（预留，暂时不启用）
+          format: int32
+        usf:
+          minimum: 0
+          type: number
+          format: float
+        rsf:
+          minimum: 0
+          type: number
+          format: float
+        image:
+          $ref: '#/components/schemas/ImageVO'
+    RegionVO:
+      required:
+        - nameI18n
+        - uuid
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: 区域UUID
+        nameI18n:
+          $ref: '#/components/schemas/I18nItem'
+    ResponseListRegionVO:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/RegionVO'
+        msg:
+          type: string
+    ResponseListTagVO:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/TagVO'
+        msg:
+          type: string
+    TagVO:
+      type: object
+      properties:
+        uuid:
+          type: string
+        type:
+          type: string
+          enum:
+            - FEATURE
+            - INFRASTRUCTURE
+            - CHARACTERISTIC_SPACE
+            - COMMERCIAL
+            - METRO
+            - BUS
+        nameI18n:
+          $ref: '#/components/schemas/I18nItem'
+    ResponseTagVO:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        data:
+          $ref: '#/components/schemas/TagVO'
+        msg:
+          type: string
+    LineVO:
+      required:
+        - nameI18n
+        - type
+      type: object
+      properties:
+        uuid:
+          type: string
+        nameI18n:
+          $ref: '#/components/schemas/I18nItem'
+        type:
+          type: string
+          description: 线路类型
+          enum:
+            - MOTRO
+            - BUS
+        stations:
+          type: array
+          items:
+            $ref: '#/components/schemas/StationVO'
+    ResponseListLineVO:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/LineVO'
+        msg:
+          type: string
+    StationVO:
+      type: object
+      properties:
+        uuid:
+          type: string
+        lineUuid:
+          type: string
+        nameI18n:
+          $ref: '#/components/schemas/I18nItem'
+    LineRequest:
+      required:
+        - nameI18n
+        - type
+      type: object
+      properties:
+        uuid:
+          type: string
+        nameI18n:
+          $ref: '#/components/schemas/I18nItem'
+        type:
+          type: string
+          description: 线路类型
+          enum:
+            - MOTRO
+            - BUS
+    ResponseLineVO:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        data:
+          $ref: '#/components/schemas/LineVO'
+        msg:
+          type: string
+    ResponseListStationVO:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/StationVO'
+        msg:
+          type: string
+    StationRequest:
+      type: object
+      properties:
+        uuid:
+          type: string
+        lineUuid:
+          type: string
+        nameI18n:
+          $ref: '#/components/schemas/I18nItem'
+    ResponseStationVO:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        data:
+          $ref: '#/components/schemas/StationVO'
+        msg:
+          type: string
+x-tagGroups:
+  - name: API - v1
+    tags:
+      - v1/mulan - region & city & district
+      - v1/mulan - building & floor
+      - v1/mulan - community
+      - v1/mulan - commercial & line & station
+      - v1/mulan - complex
+      - v1/mulan - team & rule & facility & feature & transportation & picture

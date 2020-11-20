@@ -1,8 +1,7 @@
-/* eslint-disable */
-
 const { promisify } = require('util');
 const { resolve, parse, join } = require('path');
 const fs = require('fs');
+const prettier = require('prettier');
 
 const parsePath = (filePath) => parse(filePath);
 
@@ -12,7 +11,36 @@ const joinPath = (...paths) => join(...paths);
 
 const readFile = promisify(fs.readFile);
 
-const writeFile = promisify(fs.writeFile);
+/**
+ * [prettier] format parser
+ * @param {string} path
+ */
+function switchParser(path) {
+  const suffix = path.split('.').pop().toLowerCase();
+  switch (suffix) {
+    case 'json':
+      return 'json';
+    case 'ts':
+      return 'typescript';
+    case 'yml':
+    case 'yaml':
+      return 'yaml';
+    default:
+      return 'babel';
+  }
+}
+
+const writeFile = async function (path, data, options) {
+  const prettierOptions = await prettier.resolveConfig(
+    reslovePath('../../../.prettierrc'),
+  );
+  const formatted = prettier.format(data, {
+    ...prettierOptions,
+    parser: switchParser(path),
+  });
+
+  return promisify(fs.writeFile)(path, formatted, options);
+};
 
 const fsMkdir = promisify(fs.mkdir);
 

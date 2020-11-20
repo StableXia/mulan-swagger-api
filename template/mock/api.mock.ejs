@@ -1,0 +1,13 @@
+const faker = require('faker');
+const range = require('lodash/range');
+
+/**
+* @name <%= method.methodName%>
+* @description <%= method.description%>
+*/
+module.exports = range(5).map(() => {
+  return {
+    id: faker.random.uuid(),
+    name: faker.random.words(),
+  };
+});

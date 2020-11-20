@@ -1,0 +1,2214 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: http://127.0.0.1:8080
+    description: Generated server url
+tags:
+  - name: invoice_item api
+    description: billing service invoice_item rest api
+  - name: accountOperate api
+    description: billing service accountOperate rest api
+  - name: rpc api
+    description: billing service rpc api for other services
+  - name: accountNotes api
+    description: billing service accountNotes rest api
+  - name: InvoiceAndPayment api
+    description: billing service InvoiceAndPayment rest api
+  - name: notify_log api
+    description: billing service notify_log rest api
+  - name: accountTag api
+    description: billing service accountTag rest api
+  - name: vrn api
+    description: billing service vrn rest api
+  - name: payment api
+    description: billing service payment rest api
+  - name: " account api"
+    description: billing service account rest api
+  - name: invoice api
+    description: billing service invoice rest api
+paths:
+  /api/v1/mulan/account/getList:
+    get:
+      tags:
+        - " account api"
+      description: 获取财务主账号列表
+      operationId: findList
+      parameters:
+        - name: pageNum
+          in: query
+          description: 分页页数
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 1
+        - name: pageSize
+          in: query
+          description: 分页大小
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 20
+        - name: companyNameOrCode
+          in: query
+          description: 公司名称或者shortCode
+          required: false
+          schema:
+            type: string
+        - name: locationUuid
+          in: query
+          description: 社区uuid
+          required: false
+          schema:
+            type: string
+        - name: tags
+          in: query
+          description: 账户tag
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/PageAccountBalancesVo"
+  /api/v1/mulan/account/getBalance:
+    get:
+      tags:
+        - " account api"
+      description: 查询balance信息
+      operationId: getBalance
+      parameters:
+        - name: companyUuid
+          in: query
+          description: companyUuid
+          required: true
+          schema:
+            type: string
+        - name: locationUuid
+          in: query
+          description: locationUuid
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/AccountBalancesVo"
+  /api/v1/mulan/notes/list:
+    get:
+      tags:
+        - accountNotes api
+      description: 获取账户备注列表（不分页）
+      operationId: findList_1
+      parameters:
+        - name: companyUuid
+          in: query
+          description: 公司uuid
+          required: true
+          schema:
+            type: string
+        - name: adminUuid
+          in: query
+          description: 操作人uuid
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AccountNotesVo"
+  /api/v1/mulan/notes/listPage:
+    get:
+      tags:
+        - accountNotes api
+      description: 获取账户备注列表
+      operationId: findList_2
+      parameters:
+        - name: pageNum
+          in: query
+          description: 分页页数
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 1
+        - name: pageSize
+          in: query
+          description: 分页大小
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 20
+        - name: companyUuid
+          in: query
+          description: 公司uuid
+          required: true
+          schema:
+            type: string
+        - name: adminUuid
+          in: query
+          description: 操作人uuid
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/PageAccountNotesVo"
+  /api/v1/mulan/notes/addOrUpdate:
+    post:
+      tags:
+        - accountNotes api
+      description: 添加/更新账户备注信息
+      operationId: addOrUpdate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccountNotesDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: boolean
+  /api/v1/mulan/operate/getList:
+    get:
+      tags:
+        - accountOperate api
+      description: 获取操作记录列表
+      operationId: getList
+      parameters:
+        - name: pageNum
+          in: query
+          description: 分页页数
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 1
+        - name: pageSize
+          in: query
+          description: 分页大小
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 20
+        - name: companyUuid
+          in: query
+          description: 公司uuid
+          required: true
+          schema:
+            type: string
+        - name: locationUuid
+          in: query
+          description: 社区uuid
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/PageAccountOperatesVo"
+  /api/v1/mulan/tag/delete:
+    delete:
+      tags:
+        - accountTag api
+      description: 根据id批量删除accountTag
+      operationId: delete
+      parameters:
+        - name: ids
+          in: query
+          description: 主键id集合
+          required: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: boolean
+  /api/v1/mulan/tag/list:
+    get:
+      tags:
+        - accountTag api
+      description: 获取accountTag列表
+      operationId: findList_3
+      parameters:
+        - name: companyUuid
+          in: query
+          description: companyUuid
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AccountTagVo"
+  /api/v1/mulan/tag/addOrUpdate:
+    post:
+      tags:
+        - accountTag api
+      description: 新增&更新accountTag
+      operationId: addOrUpdate_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccountTagDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: boolean
+  /api/v1/mulan/moveOut/getList:
+    get:
+      tags:
+        - move-out-controller
+      description: 获取退租列表
+      operationId: findList_4
+      parameters:
+        - name: pageNum
+          in: query
+          description: 分页页数
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 1
+        - name: pageSize
+          in: query
+          description: 分页大小
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 20
+        - name: locationUuid
+          in: query
+          description: 社区uuid
+          required: false
+          schema:
+            type: string
+        - name: startTime
+          in: query
+          description: 查询周期的开始时间
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: endTime
+          in: query
+          description: 查询周期的结束时间
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: moveOutType
+          in: query
+          description: 退租类型
+          required: false
+          schema:
+            type: string
+            default: MOVE_OUT
+            enum:
+              - MOVE_OUT
+              - TRANSFER
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/PageRefundBankAccountsVo"
+  /api/v1/mulan/moveOut/export:
+    get:
+      tags:
+        - move-out-controller
+      description: 导出退租列表
+      operationId: exportSurrenders
+      parameters:
+        - name: locationUuid
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: startTime
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: endTime
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: moveOutType
+          in: query
+          required: false
+          schema:
+            type: string
+            default: MOVE_OUT
+            enum:
+              - MOVE_OUT
+              - TRANSFER
+      responses:
+        "200":
+          description: OK
+  /vrn/bind:
+    get:
+      tags:
+        - vrn api
+      description: CRM传入contractNo绑定vrnNo
+      operationId: bind
+      parameters:
+        - name: contractNo
+          in: query
+          description: 合同号
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ResponseString"
+  /mulan/vrn/list:
+    get:
+      tags:
+        - vrn api
+      description: mulan查询所有已导入的vrn数据
+      operationId: findList_5
+      parameters:
+        - name: pageNum
+          in: query
+          description: 分页页数
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 1
+        - name: pageSize
+          in: query
+          description: 分页大小
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 20
+        - name: isBind
+          in: query
+          required: true
+          schema:
+            type: boolean
+        - name: companyNameOrCode
+          in: query
+          description: 公司名或者公司shortCode
+          required: true
+          schema:
+            type: string
+        - name: vrnNo
+          in: query
+          description: vrn号
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/PageVrnVo"
+  /api/v1/rpc/billing/deleteOrderItem:
+    put:
+      tags:
+        - rpc api
+      description: 批量删除invoice item
+      operationId: deleteOrderItem
+      parameters:
+        - name: orderItemUuids
+          in: query
+          schema:
+            type: array
+            description: orderItemUuids
+            items:
+              type: string
+          description: orderItemUuids
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              description: orderItemUuids
+              items:
+                type: string
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/Response"
+  /api/v1/rpc/billing/invoiceStatus:
+    get:
+      tags:
+        - rpc api
+      description: 批量查询订单是否已出账
+      operationId: getInvoiceStatus
+      parameters:
+        - name: orderItemUuids
+          in: query
+          description: orderItemUuids
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ResponseListInvoiceStatus"
+  /api/v1/rpc/billing/srAmount:
+    get:
+      tags:
+        - rpc api
+      description: 批量查询公司的现存押金信息
+      operationId: getSrAmount
+      parameters:
+        - name: companyUuids
+          in: query
+          description: companyUuids
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ResponseListSrAmount"
+  /api/v1/rpc/billing/vrn:
+    get:
+      tags:
+        - rpc api
+      description: 查询或者创建公司的vrn信息
+      operationId: getOrAssignVrn
+      parameters:
+        - name: companyUuid
+          in: query
+          description: companyUuid
+          required: true
+          schema:
+            type: string
+        - name: locationUuid
+          in: query
+          description: locationUuid
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ResponseListString"
+  /api/v1/rpc/billing/srPayStatus:
+    get:
+      tags:
+        - rpc api
+      operationId: getSrPayStatus
+      parameters:
+        - name: orderItemUuid
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ResponseInvoiceStatus"
+  /api/v1/mulan/invoiceAndPayment/findInvoiceAndPayment:
+    get:
+      tags:
+        - InvoiceAndPayment api
+      description: 木兰查询invoice&payments信息
+      operationId: findInvoiceAndPayment
+      parameters:
+        - name: companyUuid
+          in: query
+          description: companyUuid
+          required: true
+          schema:
+            type: string
+        - name: locationUuid
+          in: query
+          description: locationUuid
+          required: true
+          schema:
+            type: string
+        - name: types
+          in: query
+          description: 账单类型
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - INVOICE
+                - PAYMENT
+                - REVERTS_INVOICE
+                - SR_REFUND
+                - SR_INVOICE
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/InvoiceAndPaymentVo"
+  /api/v1/mulan/invoiceAndPayment/findByUuid:
+    get:
+      tags:
+        - InvoiceAndPayment api
+      description: 根据uuid查询invoice或payment
+      operationId: findByUuid
+      parameters:
+        - name: uuid
+          in: query
+          description: invoice或payment的uuid
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/InvoiceAndPaymentVo"
+  /api/v1/mulan/invoiceAndPayment/exportInvoiceAndPayments:
+    get:
+      tags:
+        - InvoiceAndPayment api
+      description: 导出账单+payments
+      operationId: exportInvoiceAndPayments
+      responses:
+        "200":
+          description: OK
+  /api/v1/mulan/invoice/create:
+    post:
+      tags:
+        - invoice api
+      description: 财务手动创建订单
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InvoiceDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: boolean
+  /api/v1/mulan/invoice/reversePayOut:
+    get:
+      tags:
+        - invoice api
+      description: 负向账单出账
+      operationId: reverse
+      parameters:
+        - name: invoiceVo
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/InvoiceVo"
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: boolean
+  /api/v1/mulan/invoice/payOut:
+    get:
+      tags:
+        - invoice api
+      description: 订单出账
+      operationId: payOut
+      parameters:
+        - name: uuid
+          in: query
+          description: 订单uuid
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: boolean
+  /api/v1/mulan/invoice/edit:
+    put:
+      tags:
+        - invoice api
+      description: 财务手动编辑订单
+      operationId: edit
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InvoiceDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: boolean
+  "/api/v1/mulan/invoice/userQueryByUuid/{uuid}":
+    get:
+      tags:
+        - invoice api
+      description: 用户查询单个invoice信息，需要校验该用户身份和权限
+      operationId: findByUuid_1
+      parameters:
+        - name: uuid
+          in: path
+          description: uuid
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/InvoiceVo"
+  /api/v1/mulan/invoice/getList:
+    get:
+      tags:
+        - invoice api
+      description: 木兰查询某个location里的所有invoice信息
+      operationId: getByAdmin
+      parameters:
+        - name: locationUuid
+          in: query
+          description: locationUuid
+          required: true
+          schema:
+            type: string
+        - name: pageNum
+          in: query
+          description: 分页页数
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 1
+        - name: pageSize
+          in: query
+          description: 分页大小
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 20
+        - name: invoiceDate
+          in: query
+          description: 账单日期
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: companyNameOrCode
+          in: query
+          description: 公司名或shortCode
+          required: false
+          schema:
+            type: string
+        - name: invoiceTag
+          in: query
+          description: 账单标签
+          required: false
+          schema:
+            type: string
+            enum:
+              - valid
+              - manual
+              - sr
+              - midMonth
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/PageInvoiceVo"
+  "/api/v1/mulan/invoice/findByUuid/{uuid}":
+    get:
+      tags:
+        - invoice api
+      description: 木兰查询单个invoice info
+      operationId: findByUuidForMulan
+      parameters:
+        - name: uuid
+          in: path
+          description: uuid
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/InvoiceVo"
+  "/api/v1/mulan/invoice/delete/{uuid}":
+    delete:
+      tags:
+        - invoice api
+      description: mulan 系统删除draft状态的invoice
+      operationId: deleteInvoice
+      parameters:
+        - name: uuid
+          in: path
+          description: 账单uuid
+          required: true
+          schema:
+            type: string
+        - name: reason
+          in: query
+          description: 修改原因
+          required: true
+          schema:
+            type: string
+        - name: notes
+          in: query
+          description: 备注
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: boolean
+  /api/v1/mulan/invoice/findSrInvoice:
+    get:
+      tags:
+        - invoice api
+      description: 查询保证金信息
+      operationId: findSrInvoice
+      parameters:
+        - name: locationUuid
+          in: query
+          description: 社区uuid
+          required: true
+          schema:
+            type: string
+        - name: companyUuid
+          in: query
+          description: 公司uuid
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/InvoiceVo"
+  "/mulan/invoiceItem/{uuid}":
+    delete:
+      tags:
+        - invoice_item api
+      description: 删除invoice item
+      operationId: deleteItem
+      parameters:
+        - name: uuid
+          in: path
+          description: uuid
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: boolean
+  /mulan/invoiceItem:
+    put:
+      tags:
+        - invoice_item api
+      description: 更新 invoice item
+      operationId: updateInvoiceItem
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InvoiceItemDto"
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/InvoiceItemDto"
+    post:
+      tags:
+        - invoice_item api
+      description: 添加invoice item
+      operationId: addInvoiceItem
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InvoiceItemDto"
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/InvoiceItemDto"
+  /mulan/notify/list:
+    get:
+      tags:
+        - notify_log api
+      description: 获取操作通知列表
+      operationId: findList_6
+      parameters:
+        - name: pageNum
+          in: query
+          description: 分页页数
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 1
+        - name: pageSize
+          in: query
+          description: 分页大小
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 20
+        - name: companyUuid
+          in: query
+          description: 公司uuid
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/PageNotifyLogVo"
+  /mulan/notify/mockCommonEnumsVo:
+    get:
+      tags:
+        - notify_log api
+      operationId: mockCommonEnumsVo
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/CommonEnumsVo"
+  /api/v1/mulan/payment/posting:
+    post:
+      tags:
+        - payment api
+      description: 财务手动po账
+      operationId: posting
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PaymentDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: boolean
+  /api/v1/mulan/payment/cancelPayment:
+    get:
+      tags:
+        - payment api
+      description: 取消付款
+      operationId: cancelPayment
+      parameters:
+        - name: uuid
+          in: query
+          description: payment_uuid
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: boolean
+  /ping:
+    get:
+      tags:
+        - ping-controller
+      operationId: ping
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+components:
+  schemas:
+    AccountBalancesVo:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        uuid:
+          type: string
+        createdDate:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+        lastModifiedDate:
+          type: string
+          format: date-time
+        lastModifiedBy:
+          type: string
+        isDeleted:
+          type: boolean
+        version:
+          type: integer
+          format: int64
+        companyUuid:
+          type: string
+          description: 公司uuid
+        companyName:
+          type: string
+          description: 公司名称
+        companyShortCode:
+          type: string
+          description: 公司编码
+        locationUuid:
+          type: string
+          description: 公司所在location的uuid
+        currency:
+          type: string
+          description: 余额币种
+        balance:
+          type: number
+          description: 公司所在location的balance
+        payingAmount:
+          type: number
+          description: 付款中
+        companyNameAndShortCode:
+          type: string
+          description: 公司名&shortCode
+        locationName:
+          type: string
+          description: 楼宇名称
+        mainMemberName:
+          type: string
+          description: 主会员名
+        licensee:
+          type: string
+          description: 持证人
+        allBalance:
+          type: number
+          description: 公司所有的balance
+        firstAccountNote:
+          $ref: "#/components/schemas/AccountNotesVo"
+      description: 公司对应的balance出参Vo
+    AccountNotesVo:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        uuid:
+          type: string
+        createdDate:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+        lastModifiedDate:
+          type: string
+          format: date-time
+        lastModifiedBy:
+          type: string
+        isDeleted:
+          type: boolean
+        version:
+          type: integer
+          format: int64
+        companyUuid:
+          type: string
+          description: 公司uuid
+        locationUuid:
+          type: string
+          description: 社区uuid
+        adminUuid:
+          type: string
+          description: 操作人uuid
+        adminName:
+          type: string
+          description: 操作人名称
+        adminAvatar:
+          type: string
+          description: 操作人头像
+        note:
+          type: string
+          description: 备注
+        createdTimeDesc:
+          type: string
+      description: 账户备注出参Vo
+    PageAccountBalancesVo:
+      type: object
+      properties:
+        totalPages:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/AccountBalancesVo"
+        number:
+          type: integer
+          format: int32
+        first:
+          type: boolean
+        sort:
+          $ref: "#/components/schemas/Sort"
+        numberOfElements:
+          type: integer
+          format: int32
+        pageable:
+          $ref: "#/components/schemas/Pageable"
+        last:
+          type: boolean
+        empty:
+          type: boolean
+    Pageable:
+      type: object
+      properties:
+        offset:
+          type: integer
+          format: int64
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        sort:
+          $ref: "#/components/schemas/Sort"
+        paged:
+          type: boolean
+        unpaged:
+          type: boolean
+    Sort:
+      type: object
+      properties:
+        sorted:
+          type: boolean
+        unsorted:
+          type: boolean
+        empty:
+          type: boolean
+    PageAccountNotesVo:
+      type: object
+      properties:
+        totalPages:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/AccountNotesVo"
+        number:
+          type: integer
+          format: int32
+        first:
+          type: boolean
+        sort:
+          $ref: "#/components/schemas/Sort"
+        numberOfElements:
+          type: integer
+          format: int32
+        pageable:
+          $ref: "#/components/schemas/Pageable"
+        last:
+          type: boolean
+        empty:
+          type: boolean
+    AccountNotesDto:
+      required:
+        - adminAvatar
+        - adminName
+        - adminUuid
+        - companyUuid
+      type: object
+      properties:
+        id:
+          type: integer
+          description: id
+          format: int64
+        uuid:
+          type: string
+          description: uuid
+        companyUuid:
+          type: string
+          description: 公司uuid
+        adminUuid:
+          type: string
+          description: 操作人uuid
+        adminName:
+          type: string
+          description: 操作人名称
+        adminAvatar:
+          type: string
+          description: 操作人头像
+        note:
+          type: string
+          description: 备注
+      description: 账户备注入参
+    AccountOperatesVo:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        uuid:
+          type: string
+        createdDate:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+        lastModifiedDate:
+          type: string
+          format: date-time
+        lastModifiedBy:
+          type: string
+        isDeleted:
+          type: boolean
+        version:
+          type: integer
+          format: int64
+        companyUuid:
+          type: string
+          description: 公司uuid
+        locationUuid:
+          type: string
+          description: locationUuid
+        operateType:
+          type: string
+          description: 操作类型
+        adminUuid:
+          type: string
+          description: 操作人uuid
+        adminName:
+          type: string
+          description: 操作人姓名
+        operateDate:
+          type: string
+          description: 操作日期
+          format: date-time
+        operateReason:
+          type: string
+          description: 操作原因
+        remark:
+          type: string
+          description: 备注
+        operateDateNumber:
+          type: integer
+          description: 操作日期时间戳
+          format: int64
+    PageAccountOperatesVo:
+      type: object
+      properties:
+        totalPages:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/AccountOperatesVo"
+        number:
+          type: integer
+          format: int32
+        first:
+          type: boolean
+        sort:
+          $ref: "#/components/schemas/Sort"
+        numberOfElements:
+          type: integer
+          format: int32
+        pageable:
+          $ref: "#/components/schemas/Pageable"
+        last:
+          type: boolean
+        empty:
+          type: boolean
+    AccountTagVo:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        uuid:
+          type: string
+        createdDate:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+        lastModifiedDate:
+          type: string
+          format: date-time
+        lastModifiedBy:
+          type: string
+        isDeleted:
+          type: boolean
+        version:
+          type: integer
+          format: int64
+        companyUuid:
+          type: string
+          description: 公司uuid
+        tagName:
+          type: string
+          description: 标签名
+      description: 账户标签出参Vo
+    AccountTagDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: 主键id
+          format: int64
+        uuid:
+          type: string
+          description: uuid
+        companyUuid:
+          type: string
+          description: 公司uuid
+        tagName:
+          type: string
+          description: 标签名
+      description: 新增&更新accountTag入参
+    PageRefundBankAccountsVo:
+      type: object
+      properties:
+        totalPages:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/RefundBankAccountsVo"
+        number:
+          type: integer
+          format: int32
+        first:
+          type: boolean
+        sort:
+          $ref: "#/components/schemas/Sort"
+        numberOfElements:
+          type: integer
+          format: int32
+        pageable:
+          $ref: "#/components/schemas/Pageable"
+        last:
+          type: boolean
+        empty:
+          type: boolean
+    RefundBankAccountsVo:
+      type: object
+      properties:
+        companyUuid:
+          type: string
+          description: 公司uuid
+        companyNameAndShortCode:
+          type: string
+          description: 公司名称&shortCode
+        locationUuid:
+          type: string
+          description: 公司所在location的uuid
+        locationName:
+          type: string
+          description: 公司所在location的名称
+        moveOutDate:
+          type: string
+          description: 退租日期
+          format: date
+        moveOutDateNumber:
+          type: integer
+          description: 退租日期时间戳
+          format: int64
+        invoiceUuid:
+          type: string
+          description: 保证金账单uuid
+        marginCurrency:
+          type: string
+          description: 保证金币种
+        marginAmount:
+          type: number
+          description: 保证金金额
+        balanceCurrency:
+          type: string
+          description: 账户余额币种
+        balanceAmount:
+          type: number
+          description: 账户余额
+        bankId:
+          type: string
+          description: 银行id
+        bankName:
+          type: string
+          description: 银行名称
+        beneficiaryName:
+          type: string
+          description: 受益人名称
+        interSwift:
+          type: string
+        bankAddress:
+          type: string
+        countryOfBank:
+          type: string
+      description: 退租出参vo
+    ResponseString:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        data:
+          type: string
+        msg:
+          type: string
+    PageVrnVo:
+      type: object
+      properties:
+        totalPages:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/VrnVo"
+        number:
+          type: integer
+          format: int32
+        first:
+          type: boolean
+        sort:
+          $ref: "#/components/schemas/Sort"
+        numberOfElements:
+          type: integer
+          format: int32
+        pageable:
+          $ref: "#/components/schemas/Pageable"
+        last:
+          type: boolean
+        empty:
+          type: boolean
+    VrnVo:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        uuid:
+          type: string
+        createdDate:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+        lastModifiedDate:
+          type: string
+          format: date-time
+        lastModifiedBy:
+          type: string
+        isDeleted:
+          type: boolean
+        version:
+          type: integer
+          format: int64
+        vrnNo:
+          type: string
+          description: vrn号
+        contractNo:
+          type: string
+          description: 合同号
+        companyUuid:
+          type: string
+          description: 公司uuid
+        locationUuid:
+          type: string
+          description: 社区uuid
+        companyNameAndShortCode:
+          type: string
+          description: 公司名&shortCode
+        countryArea:
+          type: string
+          description: 国家&地区
+        buildingCode:
+          type: string
+          description: 楼宇码
+        buildingArea:
+          type: string
+          description: 楼宇所在区域
+        area:
+          type: string
+          description: 区域
+      description: vrn出参Vo
+    Response:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        data:
+          type: object
+        msg:
+          type: string
+    InvoiceStatus:
+      type: object
+      properties:
+        orderItemUuid:
+          type: string
+        isFinalized:
+          type: boolean
+        payStatus:
+          type: string
+    ResponseListInvoiceStatus:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/InvoiceStatus"
+        msg:
+          type: string
+    ResponseListSrAmount:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/SrAmount"
+        msg:
+          type: string
+    SrAmount:
+      type: object
+      properties:
+        companyUuid:
+          type: string
+        amount:
+          type: number
+    ResponseListString:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        data:
+          type: array
+          items:
+            type: string
+        msg:
+          type: string
+    ResponseInvoiceStatus:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        data:
+          $ref: "#/components/schemas/InvoiceStatus"
+        msg:
+          type: string
+    InvoiceAndPaymentVo:
+      type: object
+      properties:
+        sortDate:
+          type: string
+          description: sortDate
+          format: date-time
+        invoiceOrPayment:
+          type: string
+          description: item
+        details:
+          type: string
+          description: 详情
+        debitCurrency:
+          type: string
+          description: debit币种
+        creditCurrency:
+          type: string
+          description: credit币种
+        balanceCurrency:
+          type: string
+          description: balance币种
+      description: invoice&payment
+    InvoiceDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: id
+          format: int64
+        uuid:
+          type: string
+          description: uuid
+        companyUuid:
+          type: string
+          description: 公司uuid
+        companyName:
+          type: string
+          description: 公司名称
+        companyShortCode:
+          type: string
+          description: 公司编码
+        locationUuid:
+          type: string
+          description: 社区uuid
+        locationShortCode:
+          type: string
+          description: 社区编码
+        locationName:
+          type: string
+          description: 社区名称
+        amount:
+          type: number
+          description: 账单金额
+        currency:
+          type: string
+          description: 币种
+        startedOn:
+          type: string
+          description: 开始时间
+          format: date
+        finishedOn:
+          type: string
+          description: 结束时间
+          format: date
+        notes:
+          type: string
+          description: notes
+        reason:
+          type: string
+          description: 修改原因
+        invoiceItemDtoList:
+          type: array
+          description: 关联的invoice_item信息
+          items:
+            $ref: "#/components/schemas/InvoiceItemDto"
+      description: 创建订单入参
+    InvoiceItemDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: id
+          format: int64
+        uuid:
+          type: string
+          description: uuid
+        name:
+          type: string
+          description: name
+        invoiceUuid:
+          type: string
+          description: 关联的账单uuid
+        billingPeriodStartedOn:
+          type: string
+          description: 账单周期开始时间
+          format: date
+        billingPeriodFinishedOn:
+          type: string
+          description: 账单周期结束时间
+          format: date
+        taxRate:
+          type: number
+          description: 税率
+        amount:
+          type: number
+          description: 不含税金额
+        reservableUuid:
+          type: string
+          description: reservable product info
+        reservableType:
+          type: string
+          description: reservable product info, Space,Desk,Bed or Resource
+        isSr:
+          type: boolean
+          description: 是否SR
+        occupiableUuid:
+          type: string
+          description: 如果是 discount for office 则使用对应office的reservableId 填充
+        occupiableType:
+          type: string
+          description: 如果是 discount for office 则使用对应office的 reservableType 填充
+        remark:
+          type: string
+          description: 明细
+      description: invoiceItem入参
+    InvoiceItemVo:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        uuid:
+          type: string
+        createdDate:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+        lastModifiedDate:
+          type: string
+          format: date-time
+        lastModifiedBy:
+          type: string
+        isDeleted:
+          type: boolean
+        version:
+          type: integer
+          format: int64
+        name:
+          type: string
+          description: name
+        invoiceUuid:
+          type: string
+          description: 关联的账单uuid
+        billingPeriodStartedOn:
+          type: string
+          description: 账单周期开始时间
+          format: date
+        billingPeriodFinishedOn:
+          type: string
+          description: 账单周期结束时间
+          format: date
+        amount:
+          type: number
+          description: 不含税金额
+        reservableUuid:
+          type: string
+          description: reservable product info
+        reservableType:
+          type: string
+          description: reservable product info, Space,Desk,Bed or Resource
+        reservationUuid:
+          type: string
+          description: 关联的预定信息
+        parentUuid:
+          type: string
+          description: 税费通过这个字段关联到line item
+        occupiableUuid:
+          type: string
+          description: 如果是 discount for office 则使用对应office的reservableId 填充
+        occupiableType:
+          type: string
+          description: 如果是 discount for office 则使用对应office的 reservableType 填充
+        quantity:
+          type: integer
+          description: 数量
+          format: int32
+        remark:
+          type: string
+          description: 明细
+        taxRate:
+          type: number
+          description: 税率
+        billingPeriodStartedOnNumber:
+          type: integer
+          description: 账单周期开始时间时间戳
+          format: int64
+        billingPeriodFinishedOnNumber:
+          type: integer
+          description: 账单周期结束时间时间戳
+          format: int64
+        officeName:
+          type: string
+          description: 办公室
+        isTaxBill:
+          type: boolean
+          description: 是否税单 true：是税单，false：不是税单
+      description: 关联的detail信息
+    InvoiceVo:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        uuid:
+          type: string
+        createdDate:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+        lastModifiedDate:
+          type: string
+          format: date-time
+        lastModifiedBy:
+          type: string
+        isDeleted:
+          type: boolean
+        version:
+          type: integer
+          format: int64
+        companyUuid:
+          type: string
+          description: 公司uuid
+        companyName:
+          type: string
+          description: 公司名称
+        companyShortCode:
+          type: string
+          description: 公司编码
+        locationUuid:
+          type: string
+          description: 社区uuid
+        locationShortCode:
+          type: string
+          description: 社区编码
+        amount:
+          type: number
+          description: 账单金额
+        amountDue:
+          type: number
+          description: 剩余支付金额
+        currency:
+          type: string
+          description: 币种
+        paymentStatus:
+          type: string
+          description: 支付状态
+          enum:
+            - unpaid
+            - partially_paid
+            - paid
+        paidAt:
+          type: string
+          description: 支付时间
+          format: date-time
+        pdfUrl:
+          type: string
+          description: PDF地址
+        invoiceNumber:
+          type: string
+          description: Invoice number
+        status:
+          type: string
+          description: 本身的状态, 待生成, 最终状态
+          enum:
+            - draft
+            - finalized
+        type:
+          type: string
+          description: 账单类型
+          enum:
+            - SR
+            - Vanilla
+            - MidMonth
+            - Simple
+        startedOn:
+          type: string
+          description: 开始时间
+          format: date
+        finishedOn:
+          type: string
+          description: 结束时间
+          format: date
+        period:
+          type: integer
+          description: 账单对应的月份
+          format: int32
+        periodYear:
+          type: integer
+          description: 账单对应的年份
+          format: int32
+        finalizedAt:
+          type: string
+          description: finalize时间
+          format: date-time
+        terms:
+          type: integer
+          description: 账期 默认为0
+          format: int32
+        notes:
+          type: string
+          description: notes
+        generateMethod:
+          type: integer
+          description: 自动创建还是手动创建：0 自动创建的 每个月的1号自动确认掉； 1 手动创建的 需要手动确认掉
+          format: int32
+        revertsInvoiceUuid:
+          type: string
+          description: 关联的Invoice信息
+        invoiceItems:
+          type: array
+          description: 关联的detail信息
+          items:
+            $ref: "#/components/schemas/InvoiceItemVo"
+        balance:
+          type: number
+          description: 计算balance
+        orderItemUuid:
+          type: string
+          description: 订单编号
+        officeName:
+          type: string
+          description: officeName
+        locationName:
+          type: string
+          description: 社区名称
+        paidAtNumber:
+          type: integer
+          description: 支付时间时间戳
+          format: int64
+        startedOnNumber:
+          type: integer
+          description: 开始时间时间戳
+          format: int64
+        finishedOnNumber:
+          type: integer
+          description: 结束时间时间戳
+          format: int64
+        finalizedAtNumber:
+          type: integer
+          description: finalize时间时间戳
+          format: int64
+        invoiceTags:
+          type: array
+          description: 订单标签（返给前端 有效、手动修改、保证金等 tag）
+          items:
+            type: string
+            description: 订单标签（返给前端 有效、手动修改、保证金等 tag）
+            enum:
+              - valid
+              - manual
+              - sr
+              - midMonth
+        reason:
+          type: string
+          description: 修改原因
+        remark:
+          type: string
+          description: 备注
+      description: invoice出参Vo
+    PageInvoiceVo:
+      type: object
+      properties:
+        totalPages:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/InvoiceVo"
+        number:
+          type: integer
+          format: int32
+        first:
+          type: boolean
+        sort:
+          $ref: "#/components/schemas/Sort"
+        numberOfElements:
+          type: integer
+          format: int32
+        pageable:
+          $ref: "#/components/schemas/Pageable"
+        last:
+          type: boolean
+        empty:
+          type: boolean
+    NotifyLogVo:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        uuid:
+          type: string
+        createdDate:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+        lastModifiedDate:
+          type: string
+          format: date-time
+        lastModifiedBy:
+          type: string
+        isDeleted:
+          type: boolean
+        version:
+          type: integer
+          format: int64
+        invoiceUuid:
+          type: string
+          description: 账单uuid
+        companyUuid:
+          type: string
+          description: 公司uuid
+        sendTo:
+          type: string
+          description: 被通知人
+        notifyTime:
+          type: string
+          description: 通知时间
+        status:
+          type: boolean
+          description: 通知状态
+      description: 通知记录出参Vo
+    PageNotifyLogVo:
+      type: object
+      properties:
+        totalPages:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/NotifyLogVo"
+        number:
+          type: integer
+          format: int32
+        first:
+          type: boolean
+        sort:
+          $ref: "#/components/schemas/Sort"
+        numberOfElements:
+          type: integer
+          format: int32
+        pageable:
+          $ref: "#/components/schemas/Pageable"
+        last:
+          type: boolean
+        empty:
+          type: boolean
+    CommonEnumsVo:
+      type: object
+      properties:
+        invoiceStatusEnum:
+          type: string
+          enum:
+            - draft
+            - finalized
+        invoiceType:
+          type: string
+          enum:
+            - SR
+            - Vanilla
+            - MidMonth
+            - Simple
+        orderItemType:
+          type: string
+          enum:
+            - Space
+            - Resource
+        paymentStatus:
+          type: string
+          enum:
+            - unpaid
+            - partially_paid
+            - paid
+        payMethod:
+          type: string
+          enum:
+            - aliPay
+            - pos
+            - wire
+        invoiceTag:
+          type: string
+          enum:
+            - valid
+            - manual
+            - sr
+            - midMonth
+        moveOutType:
+          type: string
+          enum:
+            - MOVE_OUT
+            - TRANSFER
+    PaymentDto:
+      required:
+        - companyUuid
+        - locationUuid
+      type: object
+      properties:
+        companyUuid:
+          type: string
+          description: 公司uuid
+        locationUuid:
+          type: string
+          description: location uuid
+        payAmount:
+          type: number
+        payMethod:
+          type: string
+        chequeNo:
+          type: string
+        fee:
+          type: number
+        payReason:
+          type: string
+        depositDate:
+          type: string
+          format: date-time
+        locationBankAccount:
+          type: string
+        bankCode:
+          type: string
+        bankBranch:
+          type: string
+        notes:
+          type: string
+      description: po账时接收参数实体

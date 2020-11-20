@@ -1,0 +1,1805 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v1
+servers:
+  - url: http://127.0.0.1:8080
+    description: mulan order
+  - prefix-xx: /chinaos/orderService
+paths:
+  /api/v1/mulan/orderItems/moveIn:
+    put:
+      tags:
+        - move-in-out-controller
+      operationId: moveIn
+      description: cm人员操作搬入接口
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MoveInOutDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: boolean
+  "/api/v1/mulan/orderItems/clear/{orderItemId}":
+    put:
+      tags:
+        - move-in-out-controller
+      operationId: clear
+      description: cm人员操作清场
+      parameters:
+        - name: orderItemId
+          description: 订单主键id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: boolean
+  /api/v1/mulan/orderItems/moveOut:
+    put:
+      tags:
+        - move-in-out-controller
+      operationId: moveOut
+      description: cm人员操作搬出
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MoveInOutDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: boolean
+  /api/v1/mulan/moveOutLogs:
+    get:
+      tags:
+        - move-in-out-controller
+      operationId: listMoveLog
+      description: 搬入搬出列表查询
+      parameters:
+        - name: moveLogQueryDTO
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/MoveLogQueryDTO"
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MoveLogListVO"
+  "/api/v1/mulan/moveOutLogs/{orderItemUuid}":
+    get:
+      tags:
+        - move-in-out-controller
+      operationId: getMoveLogDetail
+      description: 搬入搬出详情查询
+      parameters:
+        - name: orderItemUuid
+          description: 订单号
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: skUuid
+          description: 商品uuid
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: customerUuid
+          in: query
+          description: 公司uuid
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/MoveLogDetailVO"
+  "/api/v1/mulan/moveOutLogs/remark/{orderItemId}":
+    get:
+      tags:
+        - move-in-out-controller
+      operationId: queryRemarkByOrderItemUuid
+      description: 备注查询
+      parameters:
+        - name: orderItemId
+          description: 订单主键id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/MoveInOutRemarkVO"
+  /api/v1/mulan/order:
+    post:
+      description: 创建服务订单
+      tags:
+        - order-admin-controller
+      operationId: createOrder
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ServiceOrderDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/OrderCreatedVO"
+  "/api/v1/orderItem/{orderItemUuid}/remark":
+    put:
+      tags:
+        - order-admin-controller
+      operationId: editRemark
+      description: 订单备注编辑
+      parameters:
+        - name: orderItemUuid
+          description: 订单编号
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: boolean
+  "/api/v1/mulan/orderItem/{orderItemUuid}/confirm":
+    put:
+      description: 服务订单确认
+      tags:
+        - order-admin-controller
+      operationId: confirmOrder
+      parameters:
+        - name: orderItemUuid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: boolean
+  /api/v1/mulan/orderItems/cancel:
+    put:
+      description: 服务订单取消
+      tags:
+        - order-admin-controller
+      operationId: cancelOrder
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                description: orderItem uuid array
+                type: string
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: boolean
+  /api/v1/mulan/orderItems/finish:
+    put:
+      description: 订单结束时间变更
+      tags:
+        - order-admin-controller
+      operationId: finishOrder
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderFinishDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: boolean
+  "/api/v1/mulan/orderItem/{orderItemUuid}/confirmFinish":
+    put:
+      description: 订单结束时间变更确认
+      tags:
+        - order-admin-controller
+      operationId: confirmFinishOrder
+      parameters:
+        - name: orderItemUuid
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: shouldFine
+          in: query
+          required: true
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: boolean
+  "/api/v1/mulan/company/{companyUuid}/skus":
+    get:
+      description: 公司已订空间查询
+      tags:
+        - order-admin-controller
+      operationId: getSkuByCompany
+      parameters:
+        - name: companyUuid
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: locationUuid
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CompanySkuVO"
+  /api/v1/mulan/orderItems:
+    get:
+      description: 订单列表查询
+      tags:
+        - order-admin-controller
+      operationId: listOrders
+      parameters:
+        - name: locationUuids
+          description: 楼宇id 传多个用 , 分隔
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: keyword
+          description: 关键词
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: orderStatus
+          description: 订单状态 传多个用 , 分隔
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/CommonEnumVo/properties/orderStatus"
+        - name: orderType
+          description: 订单类型 传多个用 , 分隔
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/CommonEnumVo/properties/orderType"
+        - name: startTime
+          description: 开始时间
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: endTime
+          description: 结束时间
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: page
+          description: 当前页码
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: size
+          description: 每页大小
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 50
+        - name: sortBy
+          description: 排序字段名称
+          in: query
+          required: false
+          schema:
+            type: string
+            default: startTime
+        - name: sortDirection
+          in: query
+          required: false
+          description: 排序方式
+          schema:
+            type: string
+            default: descend
+        - name: cycleType
+          description: 周期类型,可传多个
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/CommonEnumVo/properties/cycleType"
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/PageInfoOrderListVO"
+  "/api/v1/mulan/orderItem/{orderItemNo}":
+    get:
+      tags:
+        - order-admin-controller
+      description: 订单详情查询
+      operationId: getOrderDetail
+      parameters:
+        - name: orderItemNo
+          description: 订单号
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/OrderDetailVO"
+  "/api/v1/mulan/company/{companyUuid}/order":
+    get:
+      tags:
+        - order-admin-controller
+      operationId: getOrderByCompany
+      description: 查询公司签订的空间订单或者服务订单
+      parameters:
+        - name: companyUuid
+          description: 公司uuid
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: orderType
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/CommonEnumVo/properties/orderType"
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OrderByCompanyListVO"
+  "/api/v1/mulan/company/{companyUuid}/orders/skus":
+    get:
+      tags:
+        - order-admin-controller
+      operationId: getSkuInSpaceOrderByCompany
+      description: 根据companyUuid查所有空间订单的楼和sku名称
+      parameters:
+        - name: companyUuid
+          description: 公司uuid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SkuByCompanyVO"
+  "/api/v1/crm/contract/{contractNo}":
+    get:
+      tags:
+        - order-crm-controller
+      operationId: getOrder
+      parameters:
+        - name: contractNo
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/OrderVO"
+  /api/v1/crm/order:
+    post:
+      tags:
+        - order-crm-controller
+      operationId: createOrder_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SpaceOrderDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/OrderNoVO"
+  "/api/v1/crm/contract/{contractNo}/confirm":
+    put:
+      tags:
+        - order-crm-controller
+      operationId: confirmOrder_1
+      parameters:
+        - name: contractNo
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: boolean
+  "/api/v1/crm/contract/{contractNo}/cancel":
+    put:
+      tags:
+        - order-crm-controller
+      operationId: cancelOrder_1
+      parameters:
+        - name: contractNo
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: boolean
+  "/api/v1/crm/contract/{contractNo}/releaseFutureReserve":
+    put:
+      tags:
+        - order-crm-controller
+      operationId: releaseFutureReserve
+      parameters:
+        - name: contractNo
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: boolean
+  "/api/v1/crm/contract/{contractNo}/srPaymentStatus":
+    get:
+      tags:
+        - order-crm-controller
+      operationId: getSRPaymentStatus
+      description: crm押金收款状态查询
+      parameters:
+        - name: contractNo
+          description: 合同编号
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OrderItemSRPaymentVO"
+  "/api/v1/crm/contract/{contractNo}/file":
+    post:
+      tags:
+        - order-crm-controller
+      operationId: uploadContract
+      parameters:
+        - name: contractNo
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  "/rpc/v1/contract/{contractNo}":
+    get:
+      tags:
+        - order-rpc-controller
+      operationId: getOrderByContractNo
+      description: 根据合同号获取订单信息
+      parameters:
+        - name: contractNo
+          description: 合同编号
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/OrderVO"
+  /rpc/v1/orders:
+    get:
+      tags:
+        - order-rpc-controller
+      operationId: listOrdersRpc
+      description: 多条件批量查询订单
+      parameters:
+        - name: queryDTO
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/RpcOrderQueryDTO"
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OrderVO"
+  /rpc/v1/orderItems:
+    get:
+      tags:
+        - order-rpc-controller
+      operationId: listOrdersByOrderItemUuids
+      description: 根据订单号批量查询
+      parameters:
+        - name: orderItemUuids
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OrderVO"
+components:
+  schemas:
+    CommonEnumVo:
+      type: object
+      properties:
+        actionType:
+          type: string
+          description: 操作类型枚举
+          enum:
+            - CANCEL-取消订单
+            - FINISH-终止订单
+        billStatus:
+          type: string
+          description: 账单状态枚举
+          enum:
+            - BILLING_YES-已出账
+            - BILLING_NOT-未出账
+            - BILLING_INVALID-无效账单
+        contractType:
+          type: string
+          description: 合同类型
+          enum:
+            - NEW-新合同
+            - RENEW-续约合同
+            - MOVE-搬出合同
+        cycleType:
+          type: string
+          description: 周期性
+          enum:
+            - ONE_TIME-一次性
+            - RECURSIVE-周期性
+        finishType:
+          type: string
+          enum:
+            - CONTRACT
+            - EARLY
+            - BREAK
+        messageStoreType:
+          type: string
+          enum:
+            - MQ
+            - EMAIL
+        moveOutType:
+          type: string
+          description: 搬出类型
+          enum:
+            - NORMAL-正常搬出
+            - BREAK-违约搬出
+        moveInType:
+          type: string
+          description: 搬入类型  NEW_MEMBER, RE_NEW, AUTO_RE_NEW;
+          enum:
+            - IN_BUILDING_TRANSFER-楼内搬迁
+            - BUILDING_TRANSFER-跨楼搬迁
+            - NEW_MEMBER-新搬入
+            - RE_NEW-续约
+            - AUTO_RE_NEW-自动续约
+        moveType:
+          type: string
+          description: 搬迁类型
+          enum:
+            - NORMAL-正常搬出
+            - BREAK-违约搬出
+            - IN_BUILDING_TRANSFER-楼内搬迁
+            - BUILDING_TRANSFER-跨楼搬迁
+            - NEW_MEMBER-新搬入
+            - RE_NEW-续约
+            - AUTO_RE_NEW-自动续约
+        orderEvent:
+          type: string
+          enum:
+            - INITIAL_SPACE_ORDER_EVENT
+            - INITIAL_SERVICE_ORDER_EVENT
+            - SIGNED
+            - CONFIRMED
+            - CANCEL
+            - CRM_CANCEL
+            - AUTO_CANCEL
+            - START
+            - FINISH
+        orderType:
+          type: string
+          description: 订单类型
+          enum:
+            - SPACE-空间订单
+            - SERVICE-服务订单
+        orderStatus:
+          type: string
+          description: 订单状态
+          enum:
+            - CREATING-space[已锁定]service[已创建]
+            - CANCELED-手动取消
+            - AUTO_CANCELED-自动取消
+            - CREATED-已签约
+            - RUNNING-进行中
+            - FINISHED-已完成
+        skuType:
+          type: string
+          description: 空间订单对应的空间类别
+          enum:
+            - IMMUTABLE_SEAT-移动工位
+            - MOVING_SEAT-固定工位
+            - OFFICE-办公室
+        moveInOutStatus:
+          type: string
+          description: 搬入搬出状态
+          enum:
+            - NEW-初始化
+            - WAITING_IN-待搬入
+            - MOVED_IN-已搬入
+            - WAITING_OUT-待搬出
+            - MOVED_OUT-已般出
+            - CLEAR-已清场
+        srPaymentStatus:
+          type: string
+          description: 押金付款状态
+          enum:
+            - WAITING_FOR_PAY-待支付
+            - PARTIAL_PAID-部分支付
+            - PAID-已支付
+    ServiceOrderDTO:
+      required:
+        - locationUuid
+      type: object
+      properties:
+        customerUuid:
+          description: 公司uuid
+          type: string
+        startTime:
+          description: 时间戳秒数，UTC+8
+          type: integer
+          format: int64
+        endTime:
+          description: 时间戳秒数，UTC+8
+          type: integer
+          format: int64
+        grossPrice:
+          description: 市场价
+          type: number
+        currency:
+          description: 币种
+          type: string
+        locationUuid:
+          description: 楼uuid
+          type: string
+        remark:
+          type: string
+        contractNo:
+          description: crm合同号
+          type: string
+        orderItems:
+          type: array
+          items:
+            $ref: "#/components/schemas/ServiceOrderItemDTO"
+    ServiceOrderItemDTO:
+      required:
+        - currency
+        - grossPrice
+        - recursive
+        - skuUuid
+        - taxRate
+        - type
+        - startTime
+        - endTime
+      type: object
+      properties:
+        grossPrice:
+          description: 市场价
+          minimum: 0
+          type: number
+        currency:
+          description: 币种
+          type: string
+        quantity:
+          description: 预订数量
+          minimum: 1
+          type: integer
+          format: int32
+        skuUuid:
+          description: inventory service product uuid
+          type: string
+        startTime:
+          description: 时间戳秒数，UTC+8
+          minimum: 0
+          type: integer
+          format: int64
+        endTime:
+          description: 时间戳秒数，UTC+8
+          minimum: 0
+          type: integer
+          format: int64
+        disbursement:
+          description: 是否垫付
+          type: boolean
+        recursive:
+          description: 是否周期性收费
+          type: boolean
+        type:
+          description: SPACE | SERVICE
+          type: string
+        remark:
+          type: string
+        taxRate:
+          description: 税率
+          minimum: 0
+          type: number
+        targetSkuUuid:
+          description: 办公室或工位uuid, inventory service product uuid
+          type: string
+        targetSkuName:
+          description: 办公室或工位名称
+          type: string
+    OrderCreatedVO:
+      type: object
+      properties:
+        orderNo:
+          description: 订单号
+          type: string
+        vrn:
+          type: string
+        creator:
+          description: 创建人名称
+          type: string
+        createdDate:
+          description: 时间戳秒数，UTC+8
+          type: integer
+          format: int64
+    OrderFinishDTO:
+      type: object
+      properties:
+        orderItemUuids:
+          type: array
+          items:
+            type: string
+        finishType:
+          type: string
+        finishReason:
+          description: 结束原因
+          type: string
+        finishTime:
+          description: 时间戳秒数，UTC+8
+          type: integer
+          format: int64
+    CompanySkuVO:
+      type: object
+    ActionVO:
+      type: object
+      description: 操作类型集合
+      properties:
+        actionType:
+          $ref: "#/components/schemas/CommonEnumVo/properties/actionType"
+        enable:
+          type: boolean
+          description: 是否可操作
+          enum:
+            - false
+            - true
+    OrderListVO:
+      type: object
+      properties:
+        orderItemNo:
+          description: 订单编号
+          type: string
+        amount:
+          type: number
+          description: 订单总额
+        companyName:
+          type: string
+          description: 公司名称
+        customerUuid:
+          type: string
+          description: 公司短码
+        primaryMemberName:
+          type: string
+          description: 主会员姓名
+        primaryMemberEmail:
+          type: string
+          description: 主会员邮箱
+        startTime:
+          type: integer
+          description: 订单开始时间
+          format: int64
+        finishTime:
+          type: integer
+          description: 订单结束时间
+          format: int64
+        orderStatus:
+          $ref: "#/components/schemas/CommonEnumVo/properties/orderStatus"
+        orderType:
+          $ref: "#/components/schemas/CommonEnumVo/properties/orderType"
+        cycleType:
+          $ref: "#/components/schemas/CommonEnumVo/properties/cycleType"
+        billingStatus:
+          $ref: "#/components/schemas/CommonEnumVo/properties/billStatus"
+        skuName:
+          type: string
+          description: 商品名称
+        moveStatus:
+          $ref: "#/components/schemas/CommonEnumVo/properties/moveInOutStatus"
+        skuUuid:
+          type: string
+          description: 办公室/工位编号
+        action:
+          type: array
+          items:
+            $ref: "#/components/schemas/ActionVO"
+        id:
+          type: integer
+          format: int64
+        uuid:
+          type: string
+        createdDate:
+          type: integer
+          description: 下单日期对应db创建日期
+          format: int64
+        creatorUuid:
+          type: string
+        lastModifiedDate:
+          type: integer
+          format: int64
+        lastModifierUuid:
+          type: string
+        isDeleted:
+          type: boolean
+        version:
+          type: integer
+          format: int64
+    PageInfoOrderListVO:
+      type: object
+      properties:
+        page:
+          type: integer
+          format: int32
+          description: 页码
+          default: 0
+        pageSize:
+          type: integer
+          format: int32
+          description: 分页大小
+          default: 50
+        totalRows:
+          type: integer
+          format: int64
+          description: 总条数
+        totalPages:
+          type: integer
+          format: int32
+          description: 总页数
+        rows:
+          type: array
+          description: 订单信息
+          items:
+            $ref: "#/components/schemas/OrderListVO"
+    ContractVO:
+      type: object
+      description: 合同相关信息
+      properties:
+        startTime:
+          type: integer
+          format: int64
+          description: 合同开始时间
+        endTime:
+          type: integer
+          format: int64
+          description: 合同结束时间
+        contractType:
+          $ref: "#/components/schemas/CommonEnumVo/properties/contractType"
+        invoicePeriod:
+          type: string
+          description: 账期时间
+        deposit:
+          type: number
+          description: 押金
+        contractUrl:
+          type: string
+          description: 合同号码及其链接
+        noticeDay:
+          type: integer
+          format: int32
+          description: Notice Day 通知日期
+        quantity:
+          type: integer
+          format: int32
+          description: 数量
+        saleName:
+          type: string
+          description: 销售姓名
+        amName:
+          type: string
+          description: AM姓名
+        moveInType:
+          $ref: "#/components/schemas/CommonEnumVo/properties/moveInType"
+        moveOutType:
+          $ref: "#/components/schemas/CommonEnumVo/properties/moveOutType"
+    OrderDetailVO:
+      type: object
+      properties:
+        orderItemNo:
+          type: string
+          description: 订单号
+        amount:
+          type: number
+          description: 待付单价
+        customerUuid:
+          type: string
+          description: Cid系统中公司Uuid
+        startTime:
+          type: integer
+          format: int64
+          description: 订单开始时间
+        endTime:
+          type: integer
+          format: int64
+          description: 订单结束时间
+        createdDate:
+          type: integer
+          format: int64
+          description: 下单时间
+        creatorName:
+          type: string
+          description: 创建人
+        department:
+          type: string
+          description: 所属部门
+        invoiceDate:
+          type: string
+          description: 账期
+        orderStatus:
+          $ref: "#/components/schemas/CommonEnumVo/properties/orderStatus"
+        orderType:
+          $ref: "#/components/schemas/CommonEnumVo/properties/orderType"
+        cycleType:
+          $ref: "#/components/schemas/CommonEnumVo/properties/cycleType"
+        billingStatus:
+          $ref: "#/components/schemas/CommonEnumVo/properties/billStatus"
+        remark:
+          type: string
+          description: 备注
+        skuUuid:
+          type: string
+          description: 订单号
+        locationUuid:
+          type: string
+          description: 楼宇Uuid
+        creatorUuid:
+          type: string
+        skuInfo:
+          $ref: "#/components/schemas/SkuVO"
+        action:
+          type: array
+          items:
+            $ref: "#/components/schemas/ActionVO"
+        contractInfo:
+          $ref: "#/components/schemas/ContractVO"
+        salesPolicy:
+          $ref: "#/components/schemas/SalesPolicyVO"
+        companyInfo:
+          $ref: "#/components/schemas/CompanyInfo"
+    SalesPolicyVO:
+      type: object
+      description: 销售策略信息
+    CompanyInfo:
+      type: object
+      description: 详情页公司信息
+      properties:
+        companyCode:
+          type: string
+          description: 公司短码
+        companyName:
+          type: string
+          description: 公司名称
+        locationCode:
+          type: string
+          description: 楼宇code
+        locationName:
+          type: string
+          description: 楼宇名称
+        primaryMemberName:
+          type: string
+          description: 主会员名称
+        primaryMemberId:
+          type: string
+          description: 主会员id
+        primaryMemberEmail:
+          type: string
+          description: 主会员邮箱
+        phone:
+          type: string
+          description: 电话
+    SkuVO:
+      type: object
+      description: 商品信息
+      properties:
+        skuUuid:
+          type: string
+          description: 办公室/工位编号
+        skuName:
+          type: string
+          description: 商品名称
+        cycleType:
+          $ref: "#/components/schemas/CommonEnumVo/properties/cycleType"
+        skuType:
+          $ref: "#/components/schemas/CommonEnumVo/properties/skuType"
+        stepPriceList:
+          $ref: "#/components/schemas/StepPriceDetailVO"
+        comprehensiveRate:
+          type: number
+          description: 综合折扣率
+        quantity:
+          type: integer
+          description: 数量
+          format: int32
+        totalAmount:
+          type: number
+          description: 总金额
+        originalAmount:
+          type: number
+          description: 页面上原价(不含税)
+        currency:
+          type: string
+          description: 币种
+        taxRate:
+          type: number
+          description: 税率
+        tax:
+          type: number
+          description: 页面上的税额
+        totalCbpAmount:
+          type: number
+          description: 折扣总额
+    CompanyDTO:
+      type: object
+      properties:
+        crmCompanyId:
+          description: crm 公司id
+          type: string
+        name:
+          description: 公司名称
+          type: string
+        shortCode:
+          description: 公司短码
+          type: string
+    OrderItemAmountDTO:
+      required:
+        - amount
+        - endTime
+        - startTime
+      type: object
+      properties:
+        discountOff:
+          description: 减扣率
+          minimum: 0
+          type: number
+        amount:
+          description: grossPrice - (1 - discountOff)
+          minimum: 0
+          type: number
+        startTime:
+          description: 时间戳秒数，UTC+8
+          minimum: 0
+          type: integer
+          format: int64
+        endTime:
+          description: 时间戳秒数，UTC+8
+          minimum: 0
+          type: integer
+          format: int64
+    SpaceOrderDTO:
+      required:
+        - companyDTO
+        - contractNo
+        - contractType
+        - locationUuid
+        - noticeDay
+        - salesPolicy
+      type: object
+      properties:
+        customerUuid:
+          description: 公司uuid
+          type: string
+        startTime:
+          description: 时间戳秒数，UTC+8
+          type: integer
+          format: int64
+        endTime:
+          description: 时间戳秒数，UTC+8
+          type: integer
+          format: int64
+        grossPrice:
+          description: 市场价
+          type: number
+        suggestedCbp:
+          description: 建议cbp
+          type: number
+        currency:
+          description: 币种
+          type: string
+        locationUuid:
+          description: 楼uuid
+          type: string
+        remark:
+          type: string
+        companyDTO:
+          $ref: "#/components/schemas/CompanyDTO"
+        contractNo:
+          description: crm合同号
+          type: string
+        relatedContractNo:
+          description: crm关联合同号
+          type: string
+        contractUrl:
+          type: string
+        contractType:
+          description: 合同类型，NEW（新签）| RENEW（续签）| MOVE（搬迁）
+          type: string
+        salesPolicy:
+          description: 销售政策
+          type: string
+        noticeDay:
+          description: noticeDay距合同结束的天数
+          type: integer
+          format: int32
+        orderItems:
+          type: array
+          items:
+            $ref: "#/components/schemas/SpaceOrderItemDTO"
+    SpaceOrderItemDTO:
+      required:
+        - currency
+        - grossPrice
+        - recursive
+        - skuUuid
+        - taxRate
+        - type
+        - startTime
+        - endTime
+        - suggestedCbp
+      type: object
+      properties:
+        grossPrice:
+          description: 市场价
+          minimum: 0
+          type: number
+        currency:
+          description: 币种
+          type: string
+        quantity:
+          description: 预订数量
+          minimum: 1
+          type: integer
+          format: int32
+        skuUuid:
+          description: inventery service product uuid
+          type: string
+        startTime:
+          description: 时间戳秒数，UTC+8
+          minimum: 0
+          type: integer
+          format: int64
+        endTime:
+          description: 时间戳秒数，UTC+8
+          minimum: 0
+          type: integer
+          format: int64
+        disbursement:
+          description: 是否垫付
+          type: boolean
+        recursive:
+          description: 是否周期性收费
+          type: boolean
+        type:
+          description: SPACE | SERVICE
+          type: string
+        remark:
+          type: string
+        taxRate:
+          description: 税率
+          minimum: 0
+          type: number
+        suggestedCbp:
+          description: 建议cbp
+          minimum: 0
+          type: number
+        srAmount:
+          description: 押金
+          minimum: 0
+          type: number
+        orderItemAmount:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderItemAmountDTO"
+    OrderNoVO:
+      type: object
+      properties:
+        orderNo:
+          type: string
+        vrn:
+          type: string
+    OrderItemSRPaymentVO:
+      type: object
+      description: 订单的押金支付信息
+      properties:
+        orderItemNo:
+          type: string
+          description: 订单号
+        skuName:
+          type: string
+          description: 商品名称
+        srAmount:
+          type: number
+          description: 押金金额
+        srPaymentStatus:
+          $ref: "#/components/schemas/CommonEnumVo/properties/srPaymentStatus"
+    OrderItemVO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        uuid:
+          type: string
+        createdDate:
+          description: 时间戳秒数，UTC+8
+          type: integer
+          format: int64
+        creatorUuid:
+          type: string
+        lastModifiedDate:
+          description: 时间戳秒数，UTC+8
+          type: integer
+          format: int64
+        lastModifierUuid:
+          type: string
+        isDeleted:
+          type: boolean
+        version:
+          type: integer
+          format: int64
+        stepPrices:
+          type: array
+          items:
+            $ref: "#/components/schemas/StepPriceVO"
+        grossPrice:
+          type: number
+        suggestedCbp:
+          type: number
+        currency:
+          type: string
+        quantity:
+          type: integer
+          format: int32
+        skuUuid:
+          type: string
+        startTime:
+          description: 时间戳秒数，UTC+8
+          type: integer
+          format: int64
+        endTime:
+          description: 时间戳秒数，UTC+8
+          type: integer
+          format: int64
+        disbursement:
+          type: boolean
+        orderStatus:
+          type: string
+        recursive:
+          type: boolean
+        type:
+          type: string
+        srAmount:
+          type: number
+        srPaymentStatus:
+          type: string
+        remark:
+          type: string
+        skuType:
+          type: string
+        skuName:
+          type: string
+        skuSnapshot:
+          type: string
+        orderItemNo:
+          type: string
+        billingStatus:
+          type: string
+        taxRate:
+          type: number
+        action:
+          type: array
+          items:
+            $ref: "#/components/schemas/ActionVO"
+    OrderVO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        uuid:
+          type: string
+        createdDate:
+          description: 时间戳秒数，UTC+8
+          type: integer
+          format: int64
+        creatorUuid:
+          type: string
+        lastModifiedDate:
+          description: 时间戳秒数，UTC+8
+          type: integer
+          format: int64
+        lastModifierUuid:
+          type: string
+        isDeleted:
+          type: boolean
+        version:
+          type: integer
+          format: int64
+        customerUuid:
+          description: 公司uuid
+          type: string
+        startTime:
+          description: 时间戳秒数，UTC+8
+          type: integer
+          format: int64
+        endTime:
+          description: 时间戳秒数，UTC+8
+          type: integer
+          format: int64
+        amount:
+          description: 折后价
+          type: number
+        grossPrice:
+          description: 市场价
+          type: number
+        discountOff:
+          description: 减扣率
+          type: number
+        suggestedCbp:
+          type: number
+        locationUuid:
+          type: string
+        remark:
+          type: string
+        contractNo:
+          type: string
+        relatedContractNo:
+          type: string
+        contractUrl:
+          type: string
+        contractType:
+          type: string
+        noticeDate:
+          description: noticeDate距合同结束的天数
+          type: integer
+          format: int32
+        salesPolicy:
+          $ref: "#/components/schemas/SalesPolicyVO"
+        orderItems:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderItemVO"
+    StepPriceVO:
+      type: object
+      properties:
+        startTime:
+          description: 时间戳秒数，UTC+8
+          type: integer
+          format: int64
+        endTime:
+          description: 时间戳秒数，UTC+8
+          type: integer
+          format: int64
+        amount:
+          description: grossPrice - (1 - discountOff) 折后价格
+          type: number
+        discountOff:
+          description: 减扣率
+          type: number
+    StepPriceDetailVO:
+      type: object
+      properties:
+        startTime:
+          description: 时间戳秒数，UTC+8
+          type: integer
+          format: int64
+        endTime:
+          description: 时间戳秒数，UTC+8
+          type: integer
+          format: int64
+        amount:
+          description: 页面上折后价含税
+          type: number
+        discountOff:
+          description: 减扣率
+          type: number
+        originAmount:
+          description: 页面上原单价(含税)
+          type: number
+        discountAmount:
+          description: 页面上折扣
+          type: number
+    RpcOrderQueryDTO:
+      required:
+        - customerUuids
+        - orderStatus
+      type: object
+      properties:
+        customerUuids:
+          type: stringxs
+        orderStatus:
+          type: string
+        orderType:
+          type: string
+    LocationCapacityVO:
+      type: object
+      properties:
+        locationUuid:
+          type: string
+        capacity:
+          description: 工位数量
+          type: integer
+          format: int32
+    OrderByCompanyListVO:
+      type: object
+      description: 订单相关信息
+      properties:
+        id:
+          type: integer
+          format: int64
+        uuid:
+          type: string
+        createdDate:
+          type: integer
+          format: int64
+        creatorUuid:
+          type: string
+        lastModifiedDate:
+          type: integer
+          format: int64
+        lastModifierUuid:
+          type: string
+        isDeleted:
+          type: boolean
+        version:
+          type: integer
+          format: int64
+        locationCapacity:
+          type: array
+          items:
+            $ref: "#/components/schemas/LocationCapacityVO"
+        orderItemNo:
+          description: 订单号
+          type: string
+        orderstatus:
+          $ref: "#/components/schemas/CommonEnumVo/properties/orderStatus"
+        startTime:
+          description: 时间戳秒数，UTC+8
+          type: integer
+          format: int64
+        endTime:
+          description: 时间戳秒数，UTC+8
+          type: integer
+          format: int64
+        skuName:
+          description: 商品名称
+          type: string
+        quantity:
+          description: 订购数量
+          type: integer
+          format: int64
+        capacity:
+          description: 工位数量
+          type: integer
+          format: int32
+        locationUuid:
+          type: string
+        locationName:
+          description: 楼名
+          type: string
+        grossPrice:
+          description: 下单时原价
+          type: number
+        moveInTime:
+          description: 时间戳秒数，UTC+8
+          type: integer
+          format: int64
+        moveOutTime:
+          description: 时间戳秒数，UTC+8
+          type: integer
+          format: int64
+        recursive:
+          description: 是否周期性
+          type: boolean
+    MoveInOutDTO:
+      required:
+        - actualTime
+        - orderItemId
+      type: object
+      properties:
+        orderItemId:
+          type: string
+          description: 订单主键id
+        actualTime:
+          type: integer
+          format: int64
+          description: 实际搬迁时间
+        remark:
+          type: string
+          description: 备注
+    MoveLogQueryDTO:
+      type: object
+      description: 搬出搬出列表页查询条件对象
+      properties:
+        period:
+          type: string
+          description: 查询周期默认为本月
+        keyword:
+          type: string
+          description: 关键词[页面搜索框]
+        moveStatus:
+          $ref: "#/components/schemas/CommonEnumVo/properties/moveInOutStatus"
+        moveType:
+          $ref: "#/components/schemas/CommonEnumVo/properties/moveInType"
+        skuType:
+          $ref: "#/components/schemas/CommonEnumVo/properties/skuType"
+        locationUuid:
+          type: string
+          description: 楼宇uuid
+        floorUuid:
+          type: string
+          description: 楼层uuid传多个用,分隔
+    MoveItem:
+      type: object
+      description: 搬出搬出列表页[公司下明细维度]
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 搬入搬出主键id
+        orderItemId:
+          type: integer
+          format: int64
+          description: 订单主键id
+        companyName:
+          type: string
+          description: 公司名称
+        moveStatus:
+          $ref: "#/components/schemas/CommonEnumVo/properties/moveInOutStatus"
+        moveType:
+          $ref: "#/components/schemas/CommonEnumVo/properties/moveType"
+        skuType:
+          $ref: "#/components/schemas/CommonEnumVo/properties/skuType"
+        skuName:
+          type: string
+          description: 商品名称
+        quantity:
+          type: integer
+          description: 工位数量
+          format: int32
+        expectedMoveTime:
+          type: integer
+          format: int64
+          description: 预计搬迁时间
+        actualMoveTime:
+          type: integer
+          format: int64
+          description: 实际搬迁时间
+    MoveLogListVO:
+      type: object
+      description: 搬出搬出列表页信息[公司维度]
+      properties:
+        companyName:
+          type: string
+          description: 公司名称
+        customerCompanyId:
+          type: string
+          description: 公司uuid
+        moveItems:
+          type: array
+          items:
+            $ref: "#/components/schemas/MoveItem"
+    MoveLogDetailVO:
+      type: object
+      description: 搬入搬出详情返回数据结构
+      properties:
+        skuUuid:
+          type: string
+          description: 商品uuid
+        skuName:
+          type: string
+          description: 商品名称
+        moveStatus:
+          $ref: "#/components/schemas/CommonEnumVo/properties/moveInOutStatus"
+        moveType:
+          $ref: "#/components/schemas/CommonEnumVo/properties/moveType"
+        quantity:
+          type: integer
+          format: int32
+          description: 工位数量
+        companyName:
+          type: string
+          description: 公司名称
+        primaryMemberName:
+          type: string
+          description: 主会员名称
+        phone:
+          type: string
+          description: 手机号码
+        primaryMemberEmail:
+          type: string
+          description: 主会员邮箱
+        expectMoveInDate:
+          type: integer
+          format: int64
+          description: 预计搬入日期
+        expectMoveOutDate:
+          type: integer
+          format: int64
+          description: 预计搬出日期
+        actualMoveInDate:
+          type: integer
+          format: int64
+          description: 实际搬入日期
+        actualMoveOutDate:
+          type: integer
+          format: int64
+          description: 实际搬出日期
+        hasServiceOrder:
+          type: boolean
+          description: 是否有服务订单 [true:有;fasle:无]
+        remark:
+          type: string
+          description: 备注
+        emailStatus:
+          type: string
+          description: 邮件发送状态 [true:已发送;fasle:未发送]
+    MoveInOutRemarkVO:
+      type: object
+      properties:
+        orderItemId:
+          type: integer
+          format: int64
+          description: 关联订单主键id
+        remark:
+          type: string
+          description: 备注
+    SkuByCompanyVO:
+      type: object
+      description: 楼宇和相关商品信息
+      properties:
+        locationUuid:
+          type: string
+          description: 楼宇uuid
+        locationName:
+          type: string
+          description: 楼宇名称
+        skuNames:
+          type: array
+          items:
+            $ref: "#/components/schemas/SkuNameVO"
+    SkuNameVO:
+      type: object
+      description: 商品信息
+      properties:
+        skuUuid:
+          type: string
+          description: 商品编号
+        skuName:
+          type: string
+          description: 商品名称

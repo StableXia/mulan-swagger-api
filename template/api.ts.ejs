@@ -1,0 +1,220 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, prefer-const, @typescript-eslint/naming-convention, @typescript-eslint/ban-types, @typescript-eslint/no-empty-interface */
+
+/**
+ * 该文件是根据后端的 API 文档自动生成，禁止修改
+ */
+import mulanApi from '@mulan/lib/src/network/api';
+import type { AxiosRequestConfig, AxiosPromise } from 'axios';
+
+import { useResourceForGenAPI, AxiosRestResponse, IMergeArgsAndPass, splitArgsAndPass, isObjKeysHasEmpty } from '@mulan/apis/base';
+
+<%# ------start---component 类型------ %>
+<%components.forEach(component => {%>
+  /**
+   * @name <%=component.name%>
+   * @description <%=component.description%>
+   */
+  export interface <%=component.name%> {
+    <%if (component.tsType && component.tsType.isObject && component.tsType.properties) {%>
+      <%component.tsType.properties.forEach(propertity => {%>
+        <%=propertity.name%><%=propertity.isRequired && '?'%>: 
+          <%if (propertity.isRef) {%>
+            <%-propertity.target || 'any'%>
+          <%} else if (propertity.isAtomic) {%>
+            <%-propertity.tsType || 'any'%>
+          <%} else if (propertity.isArray) {%>
+            Array<<%-propertity.elementType.target || 'any'%>>
+          <%} else {%>
+            any
+          <%}%>
+      <%})%>
+    <%} else {%>
+      [key: string]: any
+    <%}%>
+  }
+<%})%>
+<%# ------end---component 类型------ %>
+
+<% methods.forEach( method => {%>
+  <%
+    let methodName = method.methodName.replace(/^\S/, s => s.toUpperCase())
+    const typeResponseName = `Ifa${methodName}Response`
+    const typeRequestPathParametersName = `Ifa${methodName}ReqPathParameters`;
+    const typeRequestQueryParametersName = `Ifa${methodName}ReqQueryParameters`;
+    const typeRequestHeaderParametersName = `Ifa${methodName}ReqHeaderParameters`;
+
+    const typeRequestBodyName = `Ifa${methodName}RequestBody`
+
+    const containParams = !!method.parameters;
+    const parametersTypes = containParams ? method.parameters.map(p => p.in) : [];
+
+    // [parameters] path, query, header 筛选后数组
+    const parameters_path = parametersTypes.includes('path') && method.parameters.filter(p => p.in === 'path');
+    const parameters_query = parametersTypes.includes('query') && method.parameters.filter(p => p.in === 'query');
+    const parameters_header = parametersTypes.includes('header') && method.parameters.filter(p => p.in === 'header');
+    // TODO cookie parameters
+
+    // [parameters] query, header 存在必填项。(默认 path parameters 存在就是必填项)
+    const containRequired_query = parameters_query && parameters_query.some(p => p.isRequired);
+    const containRequired_header = parameters_header && parameters_header.some(p => p.isRequired);
+
+    const containBody = !!method.requestBody;
+    let response = method.response || {}
+  %>
+
+  <%# ------start---响应类型------ %>
+  export type <%= typeResponseName %> = 
+  <%if (response.isRef) {%>
+    <%-response.target || 'any'%>
+  <%} else if (response.isArray) {%>
+    Array<<%-response.elementType.target || 'any'%>>
+  <%} else if (response.isAtomic){%>
+    <%-response.tsType || 'any'%>
+  <%} else {%>
+    void
+  <%}%>
+  <%# ------end---响应类型------ %>
+
+  <%# ------start---请求参数------ %>
+  <%if (parameters_path) {%>
+    export interface <%=typeRequestPathParametersName%> {
+      <%parameters_path.forEach(parameter => {%>
+        <%if (parameter.description) {%>/** <%=parameter.description%> */<%}%>
+        <%=parameter.name%><%=parameter.isRequired ? '' : '?'%>:
+          <%if (parameter.isRef) {%>
+            <%-parameter.target || 'any'%>
+          <%} else if (parameter.isAtomic) {%>
+            <%-parameter.tsType || 'any'%>
+          <%} else if (parameter.isArray) {%>
+            Array<<%-parameter.elementType.target || 'any'%>>
+          <%} else {%>
+            any
+          <%}%>
+      <%})%>
+    }
+  <%}%>
+  <%if (parameters_query) {%>
+    export interface <%=typeRequestQueryParametersName%> {
+      <%parameters_query.forEach(parameter => {%>
+        <%if (parameter.description) {%>/** <%=parameter.description%> */<%}%>
+        <%=parameter.name%><%=parameter.isRequired ? '' : '?'%>:
+          <%if (parameter.isRef) {%>
+            <%-parameter.target || 'any'%>
+          <%} else if (parameter.isAtomic) {%>
+            <%-parameter.tsType || 'any'%>
+          <%} else if (parameter.isArray) {%>
+            Array<<%-parameter.elementType.target || 'any'%>>
+          <%} else {%>
+            any
+          <%}%>
+      <%})%>
+    }
+  <%}%>
+  <%if (parameters_header) {%>
+    export interface <%=typeRequestHeaderParametersName%> {
+      <%parameters_header.forEach(parameter => {%>
+        <%if (parameter.description) {%>/** <%=parameter.description%> */<%}%>
+        <%if (/^\w+$/g.test(parameter.name)) {%><%=parameter.name%><%} else {%>'<%=parameter.name%>'<%}%><%=parameter.isRequired ? '' : '?'%>:
+          <%if (parameter.isRef) {%>
+            <%-parameter.target || 'any'%>
+          <%} else if (parameter.isAtomic) {%>
+            <%-parameter.tsType || 'any'%>
+          <%} else if (parameter.isArray) {%>
+            Array<<%-parameter.elementType.target || 'any'%>>
+          <%} else {%>
+            any
+          <%}%>
+      <%})%>
+    }
+  <%}%>
+  <%if (containBody) {%>
+    export type <%=typeRequestBodyName%> = 
+      <%if (method.requestBody.isRef) {%>
+        <%-method.requestBody.target || 'any'%>
+      <%} else if (method.requestBody.isAtomic) {%>
+        <%-method.requestBody.tsType || 'any'%>
+      <%} else if (method.requestBody.isArray) {%>
+        Array<<%-method.requestBody.elementType.tsType || 'any'%>>
+      <%} else {%>
+        any
+      <%}%>
+  <%}%>
+  <%# ------end---请求参数------ %>
+
+  <%
+    const configFuncName = `get${methodName}RequestConfig`;
+  %>
+  /**
+  * @name <%=configFuncName%>
+  * @path <%=method.path%>
+  * @description <%=method.description%>
+  */
+  export function <%=configFuncName_%> (
+    <%if (parameters_path || parameters_query) {%>params<%=(containRequired_query || parameters_path) ? '' : '?'%>:
+    <%if (parameters_query) {%><%=typeRequestQueryParametersName%><%}-%>
+    <%if (parameters_query && parameters_path) {%> & <%}-%>
+    <%if (parameters_path) {%><%=typeRequestPathParametersName%><%}-%>,<%}-%>
+    <%if (containBody) {%>data: <%=typeRequestBodyName%>,<%}-%>
+    opts?: AxiosRequestConfig <%if (parameters_header) {%>& { headers<%=containRequired_header ? '' : '?'%>: <%=typeRequestHeaderParametersName%> }<%}%>,
+  ): AxiosRequestConfig {
+    <%if (parameters_path || parameters_query) {%>
+      const {
+        <%if (parameters_path) {%><%parameters_path.forEach(path => {%><%=path.name%>,<%})-%><%}-%>
+        <%if (parameters_query) {%>...query,<%}-%>
+      } = params;
+    <%}%>
+    <%if (parameters_path) {%>
+      const url = `<%=method.path.replace(/{/g, '${')%>`;
+    <%} else {%>
+      const url = '<%=method.path%>';
+    <%}%>
+
+    return {
+      url,
+      method: '<%=method.method.toLowerCase()%>',
+      <%if (parameters_query) {%>params: query,<%}-%>
+      <%if (containBody) {%>data,<%}-%>
+      ...opts
+    }
+  }
+
+  <%
+    const apiFuncName = `api${method.method.toUpperCase()}${methodName}`;
+    const pathAndQueryParamsStr = [...(parameters_path || []), ...(parameters_query || [])].map(p => p.name).join(', ');
+    const headerParamsStr = parameters_header && parameters_header.map(p => p.name).join(', ');
+  %>
+  /**
+  * @path <%=method.path%>
+  <% if (pathAndQueryParamsStr) {%>* @params <%=pathAndQueryParamsStr%><%}-%>
+  <% if (headerParamsStr) {%>* @header <%=headerParamsStr%><%}%>
+  */
+  export async function <%=apiFuncName%>(...options: Parameters<typeof <%=configFuncName_%>>): Promise<[<%=typeResponseName%>, AxiosRestResponse]> {
+    const { data, ...restResponse } = await (mulanApi(<%=configFuncName_%>(...options)) as AxiosPromise<<%=typeResponseName%>>);
+    
+    return [data, restResponse];
+  }
+
+  <%if (method.method.toLowerCase() === 'get') {%>
+  /**
+  * @path <%=method.path%>
+  <% if (pathAndQueryParamsStr) {%>* @params <%=pathAndQueryParamsStr%><%}-%>
+  <% if (headerParamsStr) {%>* @header <%=headerParamsStr%><%}%>
+  */
+  export function <%=`use${methodName}Resource`%>(
+    ...args: IMergeArgsAndPass<typeof <%=configFuncName_%>>
+  ) {
+    const { options, pass } = splitArgsAndPass<typeof <%=configFuncName_%>>(args);
+
+    return useResourceForGenAPI<<%=typeResponseName%>, typeof <%=configFuncName%>>(
+      <%=configFuncName%>,
+      options,
+      pass <%if (containRequired_query || parameters_path) {%>?? !isObjKeysHasEmpty(options[0], [
+        <%if (parameters_path) {%><%parameters_path.forEach(path => {%>'<%=path.name%>',<%})-%><%}-%>
+        <%if (parameters_query) {%><%parameters_query.forEach(query => {%>
+          <%if (query.isRequired) {%>'<%=query.name%>',<%}%>
+          <%})-%><%}-%>
+        ])<%} else {%>?? true<%}%>,
+    )
+  }
+  <%}%>
+<%})%>

@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 const isString = (v) => Object.prototype.toString.call(v) === '[object String]';
 
 const isObject = (v) => Object.prototype.toString.call(v) === '[object Object]';
@@ -34,6 +32,31 @@ function sleep(s) {
   });
 }
 
+function isDef(v) {
+  return v !== undefined && v !== null;
+}
+
+function safeReaper(obj, path, defaultVal) {
+  if (!isDef(obj) || !isDef(path)) {
+    return defaultVal;
+  }
+
+  try {
+    const val = new Function(
+      'obj',
+      `return obj${path.startsWith('[') ? '' : '.'}${path};`,
+    )(obj);
+
+    if (isDef(val)) {
+      return val;
+    }
+
+    return defaultVal;
+  } catch (err) {
+    return defaultVal;
+  }
+}
+
 module.exports = {
   isString,
   isObject,
@@ -42,4 +65,5 @@ module.exports = {
   sleep,
   isArray,
   isFunction,
+  safeReaper,
 };

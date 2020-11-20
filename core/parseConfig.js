@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 const { isString, isObject, isArray, isFunction } = require('../helpers/utils');
 const { parsePath, scanDir, joinPath } = require('../helpers/files');
 
@@ -11,83 +9,49 @@ function getUserConfig() {
   return require(url);
 }
 
-function getPathParse(filePath) {
+function getPathParse(filePath, { filename }) {
   const parseObj = parsePath(filePath);
 
   return {
     ...parseObj,
-    name: parseObj.name,
+    name: isFunction(filename)
+      ? filename(parseObj.name, parseObj.ext)
+      : parseObj.name,
     path: filePath,
+    sourceName: parseObj.name,
   };
 }
 
-function normalizeTplLocalPath(tplPath, tplOpts) {
-  const { name } = tplOpts;
+async function getTplConfig(config) {
+  const { tpl: tplOpts } = config;
+  const filename = config.output.filename;
 
-  if (isString(tplPath)) {
-    const parseObj = getPathParse(tplPath);
-
-    return [
-      {
-        ...parseObj,
-        name: name
-          ? isFunction(name)
-            ? name(parseObj.name, parseObj.ext)
-            : name
-          : parseObj.name,
-      },
-    ];
-  }
-
-  if (isArray(tplPath)) {
-    return tplPath.map((v) => {
-      const parseObj = getPathParse(v.path);
-
-      return {
-        ...parseObj,
-        name: v.name
-          ? isFunction(v.name)
-            ? v.name(parseObj.name, parseObj.ext)
-            : v.name
-          : name
-          ? isFunction(name)
-            ? name(parseObj.name, parseObj.ext)
-            : name
-          : parseObj.name,
-      };
-    });
-  }
-
-  return [];
-}
-
-async function getTplConfig(tplOpts) {
   if (!isObject(tplOpts)) {
     return [];
   }
 
-  const { mode = TPL_LOCAL_MODE, name, path, dir } = tplOpts;
+  const { mode = TPL_LOCAL_MODE, path, dir } = tplOpts;
 
   // 模板路径解析优先级：path > dir
   if (mode === TPL_LOCAL_MODE) {
-    if (path) {
-      return normalizeTplLocalPath(path, tplOpts);
+    if (isString(path)) {
+      const parseObj = getPathParse(path, { filename });
+
+      return [parseObj];
     }
 
-    if (dir) {
+    if (isArray(path)) {
+      return path.map((v) => getPathParse(v.path, { filename }));
+    }
+
+    if (isString(dir)) {
       const fileList = await scanDir(dir);
-
-      return fileList.map((v) => {
-        const parseObj = getPathParse(v.path);
-
-        return {
-          ...parseObj,
-          name: isFunction(name)
-            ? name(parseObj.name, parseObj.ext)
-            : parseObj.name,
-        };
-      });
+      return fileList.map((v) => getPathParse(v.path, { filename }));
     }
+  }
+
+  if (mode === TPL_REMOTE_MODE) {
+    return [];
   }
 
   return [];
