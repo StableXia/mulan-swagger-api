@@ -9,7 +9,7 @@ module.exports = {
   },
   output: {
     // api 文件的输出目录
-    path: path.resolve(__dirname, "./packages/apis"),
+    path: path.resolve(__dirname, "./apis"),
     // 生成文件的名字
     filename: (filename, ext) => `${filename}.gen`,
   },
