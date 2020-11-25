@@ -8,30 +8,58 @@ import type { AxiosRequestConfig, AxiosPromise } from 'axios';
 
 import { useResourceForGenAPI, AxiosRestResponse, IMergeArgsAndPass, splitArgsAndPass, isObjKeysHasEmpty } from '@mulan/apis/base';
 
+<%
+function isDef(v) {
+  return v !== undefined && v !== null;
+}
+
+function safeReaper(obj, path, defaultVal) {
+  if (!isDef(obj) || !isDef(path)) {
+    return defaultVal;
+  }
+
+  try {
+    const val = new Function(
+      'obj',
+      `return obj${path.startsWith('[') ? '' : '.'}${path};`,
+    )(obj);
+
+    if (isDef(val)) {
+      return val;
+    }
+
+    return defaultVal;
+  } catch (err) {
+    return defaultVal;
+  }
+}
+%>
+
+<%function genTsType(ret = {}) {%>
+  <%if (ret.isRef) {%>
+    <%-ret.target || 'any'%>
+  <%} else if (ret.isArray) {%>
+    Array<<%genTsType(safeReaper(ret, 'elementType', {}))%>>
+  <%} else if (ret.isAtomic){%>
+    <%-ret.tsType || 'any'%>
+  <%} else if (ret.isObject) {%>
+    {
+      <%safeReaper(ret, 'properties', []).forEach((propertity) => {%>
+        <%=propertity.name%><%=propertity.isRequired && '?'%>: <%genTsType(propertity)%>
+      <%})%>
+    }
+  <%} else {%>
+    any
+  <%}%>
+<%}%>
+
 <%# ------start---component 类型------ %>
 <%components.forEach(component => {%>
   /**
    * @name <%=component.name%>
    * @description <%=component.description%>
    */
-  export interface <%=component.name%> {
-    <%if (component.tsType && component.tsType.isObject && component.tsType.properties) {%>
-      <%component.tsType.properties.forEach(propertity => {%>
-        <%=propertity.name%><%=propertity.isRequired && '?'%>: 
-          <%if (propertity.isRef) {%>
-            <%-propertity.target || 'any'%>
-          <%} else if (propertity.isAtomic) {%>
-            <%-propertity.tsType || 'any'%>
-          <%} else if (propertity.isArray) {%>
-            Array<<%-propertity.elementType.target || 'any'%>>
-          <%} else {%>
-            any
-          <%}%>
-      <%})%>
-    <%} else {%>
-      [key: string]: any
-    <%}%>
-  }
+  export type <%=component.name%> = <%genTsType(safeReaper(component, 'tsType', {}))%>;
 <%})%>
 <%# ------end---component 类型------ %>
 
@@ -63,16 +91,7 @@ import { useResourceForGenAPI, AxiosRestResponse, IMergeArgsAndPass, splitArgsAn
   %>
 
   <%# ------start---响应类型------ %>
-  export type <%= typeResponseName %> = 
-  <%if (response.isRef) {%>
-    <%-response.target || 'any'%>
-  <%} else if (response.isArray) {%>
-    Array<<%-response.elementType.target || 'any'%>>
-  <%} else if (response.isAtomic){%>
-    <%-response.tsType || 'any'%>
-  <%} else {%>
-    void
-  <%}%>
+  export type <%= typeResponseName %> = <%genTsType(response)%>;
   <%# ------end---响应类型------ %>
 
   <%# ------start---请求参数------ %>
@@ -80,16 +99,7 @@ import { useResourceForGenAPI, AxiosRestResponse, IMergeArgsAndPass, splitArgsAn
     export interface <%=typeRequestPathParametersName%> {
       <%parameters_path.forEach(parameter => {%>
         <%if (parameter.description) {%>/** <%=parameter.description%> */<%}%>
-        <%=parameter.name%><%=parameter.isRequired ? '' : '?'%>:
-          <%if (parameter.isRef) {%>
-            <%-parameter.target || 'any'%>
-          <%} else if (parameter.isAtomic) {%>
-            <%-parameter.tsType || 'any'%>
-          <%} else if (parameter.isArray) {%>
-            Array<<%-parameter.elementType.target || 'any'%>>
-          <%} else {%>
-            any
-          <%}%>
+        <%=parameter.name%><%=parameter.isRequired ? '' : '?'%>: <%genTsType(parameter)%>
       <%})%>
     }
   <%}%>
@@ -97,16 +107,7 @@ import { useResourceForGenAPI, AxiosRestResponse, IMergeArgsAndPass, splitArgsAn
     export interface <%=typeRequestQueryParametersName%> {
       <%parameters_query.forEach(parameter => {%>
         <%if (parameter.description) {%>/** <%=parameter.description%> */<%}%>
-        <%=parameter.name%><%=parameter.isRequired ? '' : '?'%>:
-          <%if (parameter.isRef) {%>
-            <%-parameter.target || 'any'%>
-          <%} else if (parameter.isAtomic) {%>
-            <%-parameter.tsType || 'any'%>
-          <%} else if (parameter.isArray) {%>
-            Array<<%-parameter.elementType.target || 'any'%>>
-          <%} else {%>
-            any
-          <%}%>
+        <%=parameter.name%><%=parameter.isRequired ? '' : '?'%>: <%genTsType(parameter)%>
       <%})%>
     }
   <%}%>
@@ -114,30 +115,12 @@ import { useResourceForGenAPI, AxiosRestResponse, IMergeArgsAndPass, splitArgsAn
     export interface <%=typeRequestHeaderParametersName%> {
       <%parameters_header.forEach(parameter => {%>
         <%if (parameter.description) {%>/** <%=parameter.description%> */<%}%>
-        <%if (/^\w+$/g.test(parameter.name)) {%><%=parameter.name%><%} else {%>'<%=parameter.name%>'<%}%><%=parameter.isRequired ? '' : '?'%>:
-          <%if (parameter.isRef) {%>
-            <%-parameter.target || 'any'%>
-          <%} else if (parameter.isAtomic) {%>
-            <%-parameter.tsType || 'any'%>
-          <%} else if (parameter.isArray) {%>
-            Array<<%-parameter.elementType.target || 'any'%>>
-          <%} else {%>
-            any
-          <%}%>
+        <%if (/^\w+$/g.test(parameter.name)) {%><%=parameter.name%><%} else {%>'<%=parameter.name%>'<%}%><%=parameter.isRequired ? '' : '?'%>: <%genTsType(parameter)%>
       <%})%>
     }
   <%}%>
   <%if (containBody) {%>
-    export type <%=typeRequestBodyName%> = 
-      <%if (method.requestBody.isRef) {%>
-        <%-method.requestBody.target || 'any'%>
-      <%} else if (method.requestBody.isAtomic) {%>
-        <%-method.requestBody.tsType || 'any'%>
-      <%} else if (method.requestBody.isArray) {%>
-        Array<<%-method.requestBody.elementType.tsType || 'any'%>>
-      <%} else {%>
-        any
-      <%}%>
+    export type <%=typeRequestBodyName%> = <%genTsType(safeReaper(method, 'requestBody', {}))%>
   <%}%>
   <%# ------end---请求参数------ %>
 

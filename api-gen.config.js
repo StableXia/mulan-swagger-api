@@ -17,6 +17,6 @@ module.exports = {
     // 获取 openapi 模板的方式：local、remote
     mode: "local",
     // openapi 模板路径
-    path: path.resolve(__dirname, "./swagger/inventory.yaml"),
+    path: path.resolve(__dirname, "./swagger/order.yaml"),
   },
 };

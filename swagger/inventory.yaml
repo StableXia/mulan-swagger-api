@@ -21,16 +21,16 @@ x-tagGroups:
       - mulan
       - rpc
 components:
-  securitySchemes:
-    ChinaAccessToken:
-      type: apiKey
-      name: Authorization
-      in: header
-      description: "Send a token like this `X-CAT CHINA_ACCESS_TOKEN_VALUE` in
-        Authorization header. You can find the token for staging and development
-        here:
-        https://github.com/WeConnect/china-member-service/blob/master/user-core\
-        /docs/rpc/environment.md"
+  schemas:
+    CommonEnumVo:
+      type: object
+      properties:
+        actionType:
+          type: string
+          description: 操作类型枚举
+          enum:
+            - CANCEL-取消订单
+            - FINISH-终止订单
 paths:
   /api/v1/rpc/products:
     get:
@@ -57,7 +57,6 @@ paths:
               enum:
                 - PRIVATE_OFFICE
                 - HD
-                - DD
         - name: productStatuses
           in: query
           description: filter by product statuses
@@ -97,23 +96,12 @@ paths:
                           type: boolean
                         hasInternalRoom:
                           description: hasInternalRoom
-                          type: boolean
-                        productName:
-                          description: productName
-                          example: A-101
-                          type: string
-                        productType:
-                          description: productType
-                          example: PRIVATE_OFFICE
-                          $ref: "#/paths/api/v1/rpc/products/get/parameters/1/schema/items"
-                        productUuid:
-                          description: productUuid
-                          example: 3cb9c78f-b0bc-42db-9dfd-dc2a8997ca1b
-                          type: string
-                        capacity:
-                          description: capacity
-                          example: 30
-                          type: integer
+                          type: object
+                          properties:
+                            code:
+                              description: code
+                              example: 0
+                              type: integer
                       type: object
                     type: array
                   msg:

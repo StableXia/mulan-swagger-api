@@ -1,7 +1,7 @@
-const ejs = require('ejs');
-const { generateTsType } = require('./tsType');
-const { API_METHODS } = require('../helpers/constants');
-const { convertYmlToJson } = require('./convertYmlToJson');
+const ejs = require("ejs");
+const { generateTsType } = require("./tsType");
+const { API_METHODS } = require("../helpers/constants");
+const { convertYmlToJson } = require("./convertYmlToJson");
 const {
   readFile,
   writeFile,
@@ -10,18 +10,18 @@ const {
   createDir,
   scanDir,
   parsePath,
-} = require('../helpers/files');
-const { forEach, safeReaper } = require('../helpers/utils');
-const { askCheckbox, askOverride } = require('./inquire');
+} = require("../helpers/files");
+const { forEach, safeReaper } = require("../helpers/utils");
+const { askCheckbox, askOverride } = require("./inquire");
 
-const isPathParameter = (v) => v === 'path';
+const isPathParameter = (v) => v === "path";
 
 function normalizeName(id) {
-  return id.replace(/\.|\-|\{|\}|\s/g, '_');
+  return id.replace(/\.|\-|\{|\}|\s/g, "_");
 }
 
 function normalizeTypeName(id) {
-  return id.replace(/«|»/g, '');
+  return id.replace(/«|»/g, "");
 }
 
 function getTargetJsonFromSwaggerJson(swaggerJson) {
@@ -48,7 +48,7 @@ function getTargetJsonFromSwaggerJson(swaggerJson) {
       const pathOptionsKeyUpper = pathOptionsKey.toUpperCase();
       // 过滤无效的方法
       if (
-        pathOptionsKeyUpper === '' ||
+        pathOptionsKeyUpper === "" ||
         !API_METHODS.includes(pathOptionsKeyUpper)
       ) {
         return;
@@ -90,9 +90,9 @@ function getTargetJsonFromSwaggerJson(swaggerJson) {
       }
 
       if (pathOptsVal.requestBody) {
-        const res = pathOptsVal.requestBody.content['application/json'];
+        const res = pathOptsVal.requestBody.content["application/json"];
         method.requestBody = generateTsType(
-          res && res.schema ? res.schema : res || {},
+          res && res.schema ? res.schema : res || {}
         );
       }
 
@@ -108,12 +108,14 @@ function compileTpl(tplString, swaggerData) {
 }
 
 async function getSwaggerData(tplPath) {
-  const yml = await readFile(tplPath, 'utf8');
-  return getTargetJsonFromSwaggerJson(convertYmlToJson(yml));
+  const yml = await readFile(tplPath, "utf8");
+  const json = getTargetJsonFromSwaggerJson(convertYmlToJson(yml));
+  writeFile("./apis/test.json", JSON.stringify(json, null, 2));
+  return json;
 }
 
 async function genTsCode({ swaggerData, name, output }) {
-  const ejsTeml = await readFile(reslovePath('../template/api.ts.ejs'));
+  const ejsTeml = await readFile(reslovePath("../template/api.ts.ejs"));
 
   const isExist = await isExistsPath(`${output}/${name}.ts`);
 
@@ -140,10 +142,10 @@ async function genMockCode({ swaggerData, output, sourceName }) {
   }
 
   const apiEjsTeml = await readFile(
-    reslovePath('../template/mock/api.mock.ejs'),
+    reslovePath("../template/mock/api.mock.ejs")
   );
   const indexEjsTeml = await readFile(
-    reslovePath('../template/mock/index.mock.ejs'),
+    reslovePath("../template/mock/index.mock.ejs")
   );
   const methods = swaggerData.methods || [];
   const existFileMap = {};
@@ -163,11 +165,11 @@ async function genMockCode({ swaggerData, output, sourceName }) {
   let overrideFileList = [];
   if (existFileList.length > 0) {
     const res = await askCheckbox({
-      message: '以下 mock 文件已经存在，请选择需要覆盖的文件',
+      message: "以下 mock 文件已经存在，请选择需要覆盖的文件",
       choices: existFileList.map((v) => ({ name: v })),
     });
 
-    overrideFileList = res.includes('全选') ? existFileList : res;
+    overrideFileList = res.includes("全选") ? existFileList : res;
   }
   for (let i = 0; i < overrideFileList.length; i++) {
     if (existFileMap[overrideFileList[i]]) {
@@ -176,7 +178,7 @@ async function genMockCode({ swaggerData, output, sourceName }) {
       });
       await writeFile(
         `${dir}/${existFileMap[overrideFileList[i]].methodName}.js`,
-        res,
+        res
       );
     }
   }
@@ -184,7 +186,7 @@ async function genMockCode({ swaggerData, output, sourceName }) {
   const fileList = await scanDir(dir);
   const filenameList = fileList
     .map((v) => parsePath(v.path).name)
-    .filter((v) => v !== 'index');
+    .filter((v) => v !== "index");
   const res = compileTpl(indexEjsTeml.toString(), { filenameList });
   await writeFile(`${dir}/index.js`, res);
 }
